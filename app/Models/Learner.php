@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Learner extends Model
 {
@@ -23,5 +24,15 @@ class Learner extends Model
     public function mode(): BelongsTo
     {
         return $this->belongsTo(Mode::class);
+    }
+
+    public function timeslots(): BelongsToMany
+    {
+        return $this->belongsToMany(Timeslot::class);
+    }
+
+    public function trainings(): BelongsToMany
+    {
+        return $this->belongsToMany(Training::class);
     }
 }

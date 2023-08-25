@@ -6,6 +6,7 @@ use App\Enums\StatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Teacher extends Model
 {
@@ -23,5 +24,20 @@ class Teacher extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function requests(): HasMany
+    {
+        return $this->hasMany(Request::class);
+    }
+
+    public function timeslots(): HasMany
+    {
+        return $this->hasMany(Timeslot::class);
+    }
+
+    public function trainings(): HasMany
+    {
+        return $this->hasMany(Training::class);
     }
 }
