@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\StatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,7 +17,7 @@ class Teacher extends Model
     ];
 
     protected $casts = [
-        'status' => 'string',
+        'status' => StatusEnum::class,
     ];
 
     public function user(): BelongsTo

@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('teachers', function (Blueprint $table) {
             $table->foreignId('user_id')->primary()->constrained()->cascadeOnDelete();
-            $table->enum('status', ['internal', 'external']);
+            $table->enum('status', ['Interne', 'Externe']);
             $table->timestamps();
         });
     }
