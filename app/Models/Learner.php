@@ -1,38 +1,67 @@
 <?php
 
+/**
+ * Created by Reliese Model.
+ */
+
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+/**
+ * Class Learner
+ *
+ * @property int $user_id
+ * @property int $mode_id
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ *
+ * @property Mode $mode
+ * @property User $user
+ * @property Collection|Promotion[] $promotions
+ * @property Collection|Timeslot[] $timeslots
+ *
+ * @package App\Models
+ */
 class Learner extends Model
 {
-    use HasFactory;
-
-    protected $fillable = [
-        'user_id',
-        'mode_id',
+    public $incrementing = false;
+    protected $table = 'learners';
+    protected $primaryKey = 'user_id';
+    protected $casts = [
+        'user_id' => 'int',
+        'mode_id' => 'int'
     ];
 
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
+    protected $fillable = [
+        'mode_id'
+    ];
 
     public function mode(): BelongsTo
     {
         return $this->belongsTo(Mode::class);
     }
 
-    public function timeslots(): BelongsToMany
+    public function user(): BelongsTo
     {
-        return $this->belongsToMany(Timeslot::class);
+        return $this->belongsTo(User::class);
     }
 
-    public function trainings(): BelongsToMany
+    public function promotions(): BelongsToMany
     {
-        return $this->belongsToMany(Training::class);
+        return $this->belongsToMany(Promotion::class)
+            ->withPivot('id')
+            ->withTimestamps();
+    }
+
+    public function timeslots(): BelongsToMany
+    {
+        return $this->belongsToMany(Timeslot::class)
+            ->withPivot('id')
+            ->withTimestamps();
     }
 }

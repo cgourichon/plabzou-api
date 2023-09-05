@@ -1,23 +1,42 @@
 <?php
 
+/**
+ * Created by Reliese Model.
+ */
+
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * Class AdministrativeEmployee
+ *
+ * @property int $user_id
+ * @property bool $is_super_admin
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ *
+ * @property User $user
+ * @property Collection|Request[] $requests
+ *
+ * @package App\Models
+ */
 class AdministrativeEmployee extends Model
 {
-    use HasFactory;
-
-    protected $fillable = [
-        'user_id',
-        'is_super_admin',
+    public $incrementing = false;
+    protected $table = 'administrative_employees';
+    protected $primaryKey = 'user_id';
+    protected $casts = [
+        'user_id' => 'int',
+        'is_super_admin' => 'bool'
     ];
 
-    protected $casts = [
-        'is_super_admin' => 'boolean',
+    protected $fillable = [
+        'is_super_admin'
     ];
 
     public function user(): BelongsTo

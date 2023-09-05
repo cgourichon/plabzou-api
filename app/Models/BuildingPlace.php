@@ -7,39 +7,35 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * Class Room
+ * Class BuildingPlace
  *
  * @property int $id
  * @property int $building_id
- * @property string $name
- * @property int $seats_number
+ * @property int $place_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  *
  * @property Building $building
- * @property Collection|Timeslot[] $timeslots
+ * @property Place $place
  *
  * @package App\Models
  */
-class Room extends Model
+class BuildingPlace extends Model
 {
-    protected $table = 'rooms';
+    protected $table = 'building_place';
 
     protected $casts = [
         'building_id' => 'int',
-        'seats_number' => 'int'
+        'place_id' => 'int'
     ];
 
     protected $fillable = [
         'building_id',
-        'name',
-        'seats_number'
+        'place_id'
     ];
 
     public function building(): BelongsTo
@@ -47,8 +43,8 @@ class Room extends Model
         return $this->belongsTo(Building::class);
     }
 
-    public function timeslots(): HasMany
+    public function place(): BelongsTo
     {
-        return $this->hasMany(Timeslot::class);
+        return $this->belongsTo(Place::class);
     }
 }
