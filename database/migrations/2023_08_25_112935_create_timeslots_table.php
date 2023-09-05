@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('training_id')->constrained();
             $table->foreignId('room_id')->constrained();
-            $table->dateTime('start_date');
-            $table->dateTime('end_date');
+            $table->dateTime('starts_at');
+            $table->dateTime('ends_at');
             $table->boolean('is_validated')->default(false);
             $table->timestamps();
         });
