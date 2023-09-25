@@ -19,11 +19,8 @@ Route::fallback(function (){
     abort(404, 'API resource not found');
 });
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::prefix('auth')->group(static function () {
     Route::post('login', [AuthController::class, 'login']);
     Route::middleware('auth:sanctum')->post('logout', [AuthController::class, 'logout']);
+    Route::middleware('auth:sanctum')->get('user', [AuthController::class, 'getAuthenticatedUser']);
 });

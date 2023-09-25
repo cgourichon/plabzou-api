@@ -7,6 +7,7 @@ use App\Http\Requests\API\Auth\LoginRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends BaseController
@@ -25,12 +26,9 @@ class AuthController extends BaseController
             return $this->error('Mauvais identifiants.', 401);
         }
 
-        $token = $user->createToken('auth_token')->plainTextToken;
-
         return $this->success([
-            'token_type' => 'Bearer',
-            'token' => $token,
-            'user' => $user,
+            'token' => 'Bearer ' . $user->createToken('auth_token')->plainTextToken,
+            'expires_at' => Carbon::now()->addMinutes(config('sanctum.expiration'))->timestamp,
         ], 'Utilisateur connecté avec succès');
     }
 
@@ -42,8 +40,19 @@ class AuthController extends BaseController
      */
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        $request->user()->tokens()->delete();
 
         return $this->success([], 'Utilisateur déconnecté avec succès');
+    }
+
+    /**
+     * Récupération de l'utilisateur connecté
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getAuthenticatedUser(Request $request)
+    {
+        return $this->success($request->user()->toArray(), 'Utilisateur récupéré avec succès');
     }
 }
