@@ -23,7 +23,7 @@ class AuthController extends BaseController
         $user = User::where('email', $request->email)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
-            return $this->error('Mauvais identifiants.', 401);
+            return $this->error('Mauvais identifiants', 401);
         }
 
         return $this->success([
