@@ -53,6 +53,9 @@ class AuthController extends BaseController
      */
     public function getAuthenticatedUser(Request $request)
     {
-        return $this->success($request->user()->toArray(), 'Utilisateur récupéré avec succès');
+        $user = $request->user();
+        $user->load('administrativeEmployee', 'learner', 'teacher');
+
+        return $this->success($user->toArray(), 'Utilisateur récupéré avec succès');
     }
 }
