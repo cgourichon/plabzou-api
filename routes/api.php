@@ -22,5 +22,5 @@ Route::fallback(function (){
 Route::prefix('auth')->group(static function () {
     Route::post('login', [AuthController::class, 'login']);
     Route::middleware('auth:sanctum')->post('logout', [AuthController::class, 'logout']);
-    Route::middleware('auth:sanctum')->get('user', [AuthController::class, 'getAuthenticatedUser']);
+    Route::middleware('auth:sanctum')->get('me', [AuthController::class, 'getAuthenticatedUser']);
 });
