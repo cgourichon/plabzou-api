@@ -15,10 +15,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::fallback(function (){
-    abort(404, 'API resource not found');
-});
-
 Route::prefix('auth')->group(static function () {
     Route::post('login', [AuthController::class, 'login']);
     Route::middleware('auth:sanctum')->post('logout', [AuthController::class, 'logout']);
