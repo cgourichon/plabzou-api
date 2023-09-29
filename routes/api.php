@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\Auth\AuthController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\API\User\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,4 +19,8 @@ Route::prefix('auth')->group(static function () {
     Route::post('login', [AuthController::class, 'login']);
     Route::middleware('auth:sanctum')->post('logout', [AuthController::class, 'logout']);
     Route::middleware('auth:sanctum')->get('me', [AuthController::class, 'getAuthenticatedUser']);
+});
+
+Route::middleware('auth:sanctum')->group(static function () {
+    Route::apiResource('users', UserController::class);
 });
