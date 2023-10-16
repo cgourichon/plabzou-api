@@ -3,8 +3,7 @@
 namespace App\Http\Controllers\API\User;
 
 use App\Http\Controllers\API\BaseController;
-use App\Http\Requests\API\User\StoreUserRequest;
-use App\Http\Requests\API\User\UpdateUserRequest;
+use App\Http\Requests\API\User\UserRequest;
 use App\Models\User;
 use App\Services\User\UserService;
 
@@ -17,7 +16,7 @@ class UserController extends BaseController
         return $this->success($users->toArray(), 'Utilisateurs récupérés avec succès.');
     }
 
-    public function store(StoreUserRequest $request)
+    public function store(UserRequest $request)
     {
         $user = UserService::createUser($request->validated());
 
@@ -31,7 +30,7 @@ class UserController extends BaseController
         return $this->success($user->toArray(), 'Utilisateur récupéré avec succès.');
     }
 
-    public function update(UpdateUserRequest $request, User $user)
+    public function update(UserRequest $request, User $user)
     {
         $user = UserService::updateUser($user, $request->validated());
 

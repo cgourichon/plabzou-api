@@ -18,7 +18,9 @@ class UserService
         $data['last_name'] = strtoupper($data['last_name']);
         $data['email'] = strtolower($data['email']);
 
-        if (isset($data['password'])) {
+        if (empty($data['password'])) {
+            unset($data['password']);
+        } else {
             $data['password'] = bcrypt($data['password']);
         }
 
@@ -32,7 +34,8 @@ class UserService
 
     public static function updateUser(User $user, array $data): User
     {
-        $user->update(self::formatUserData($data));
+        $user->fill(self::formatUserData($data));
+        $user->save();
 
         return $user;
     }

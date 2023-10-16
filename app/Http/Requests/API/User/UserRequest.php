@@ -4,8 +4,9 @@ namespace App\Http\Requests\API\User;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class UpdateUserRequest extends FormRequest
+class UserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,9 +26,19 @@ class UpdateUserRequest extends FormRequest
         return [
             'first_name' => ['sometimes', 'required', 'string', 'max:255'],
             'last_name' => ['sometimes', 'required', 'string', 'max:255'],
-            'phone_number' => ['sometimes', 'required', 'string', 'max:12', 'min:12', 'unique:users,phone_number,' . $this->user->id],
-            'email' => ['required', 'email', 'unique:users,email,' . $this->user->id],
-            'password' => ['sometimes', 'required', 'string', 'min:8']
+            'phone_number' => [
+                'required',
+                'string',
+                'max:12',
+                'min:12',
+                Rule::unique('users', 'phone_number')->ignore($this->user?->id)
+            ],
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('users', 'email')->ignore($this->user?->id)
+            ],
+            'password' => (!$this->user?->id || $this->password) ? ['required', 'string', 'min:8'] : ['nullable'],
         ];
     }
 
