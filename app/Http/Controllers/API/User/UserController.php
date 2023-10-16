@@ -25,13 +25,15 @@ class UserController extends BaseController
 
     public function show(User $user)
     {
-        $user->load(['administrativeEmployee', 'teacher', 'learner']);
+        $user->load(['administrativeEmployee', 'teacher', 'learner.mode']);
 
         return $this->success($user->toArray(), 'Utilisateur récupéré avec succès.');
     }
 
     public function update(UserRequest $request, User $user)
     {
+        $user->load(['administrativeEmployee', 'teacher', 'learner']);
+
         $user = UserService::updateUser($user, $request->validated());
 
         return $this->success($user->toArray(), 'Utilisateur mis à jour avec succès.');
