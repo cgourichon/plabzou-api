@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('modes', function (Blueprint $table) {
             $table->id();
-            $table->enum('name', ['Présentiel', 'Distanciel']);
+            $table->enum('name', ['Présentiel', 'Distanciel', 'Mixte']);
             $table->timestamps();
         });
     }
