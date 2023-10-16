@@ -2,6 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\AdministrativeEmployee;
+use App\Models\Learner;
+use App\Models\Teacher;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -12,6 +15,8 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->count(30)->create();
+        AdministrativeEmployee::factory()->count(10)->create();
+        Teacher::factory()->count(15)->create();
+        Learner::factory()->count(30)->create();
     }
 }
