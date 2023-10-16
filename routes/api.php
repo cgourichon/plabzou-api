@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\API\Auth\AuthController;
+use App\Http\Controllers\API\Mode\ModeController;
+use App\Http\Controllers\API\Status\StatusController;
 use App\Http\Controllers\API\User\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,4 +25,6 @@ Route::prefix('auth')->group(static function () {
 
 Route::middleware('auth:sanctum')->group(static function () {
     Route::apiResource('users', UserController::class);
+    Route::get('statuses', [StatusController::class, 'index']);
+    Route::get('modes', [ModeController::class, 'index']);
 });
