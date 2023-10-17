@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API\Category;
 
 use App\Http\Controllers\API\BaseController;
-use App\Http\Requests\API\Category\CategoryRequest;
+use App\Http\Requests\API\Course\CourseRequest;
 use App\Models\Category;
 use App\Services\Category\CategoryService;
 
@@ -16,7 +16,7 @@ class CategoryController extends BaseController
         return $this->success($categories->toArray(), 'Catégories récupérées avec succès.');
     }
 
-    public function store(CategoryRequest $request)
+    public function store(CourseRequest $request)
     {
         $category = CategoryService::createCategory($request->validated());
 
@@ -28,7 +28,7 @@ class CategoryController extends BaseController
         return $this->success($category->toArray(), 'Catégorie récupérée avec succès.');
     }
 
-    public function update(CategoryRequest $request, Category $category)
+    public function update(CourseRequest $request, Category $category)
     {
         $category = CategoryService::updateCategory($category, $request->validated());
 
