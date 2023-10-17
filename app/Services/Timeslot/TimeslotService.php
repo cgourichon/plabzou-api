@@ -3,7 +3,9 @@
 namespace App\Services\Timeslot;
 
 use App\Models\Timeslot;
+use Exception;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class TimeslotService
 {
@@ -14,20 +16,38 @@ class TimeslotService
 
     public static function createTimeslot(array $data): Timeslot
     {
-        $timeslot = Timeslot::create(self::formatTimeslotData($data));
-        $timeslot->learners()->attach(collect($data['learners'])->pluck('id'));
-        $timeslot->teachers()->attach(collect($data['teachers'])->pluck('id'));
+        DB::beginTransaction();
 
-        return $timeslot;
+        try {
+            $timeslot = Timeslot::create(self::formatTimeslotData($data));
+            $timeslot->learners()->attach(collect($data['learners'])->pluck('user_id'));
+            $timeslot->teachers()->attach(collect($data['teachers'])->pluck('user_id'));
+
+            DB::commit();
+
+            return $timeslot;
+        } catch (Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     public static function updateTimeslot(Timeslot $timeslot, array $data): Timeslot
     {
-        $timeslot->update(self::formatTimeslotData($data));
-        $timeslot->learners()->sync($data['learners']);
-        $timeslot->teachers()->sync($data['teachers']);
+        DB::beginTransaction();
 
-        return $timeslot;
+        try {
+            $timeslot->update(self::formatTimeslotData($data));
+            $timeslot->learners()->sync(collect($data['learners'])->pluck('user_id'));
+            $timeslot->teachers()->sync(collect($data['teachers'])->pluck('user_id'));
+
+            DB::commit();
+
+            return $timeslot;
+        } catch (Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     private static function formatTimeslotData(array $data): array
