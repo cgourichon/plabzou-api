@@ -12,21 +12,14 @@ class CategoryService
         return Category::all();
     }
 
-    private static function formatCategoryData(array $data): array
-    {
-        $data['name'] = ucwords(strtolower($data['name']));
-
-        return $data;
-    }
-
     public static function createCategory(array $data): Category
     {
-        return Category::create(self::formatCategoryData($data));
+        return Category::create($data);
     }
 
     public static function updateCategory(Category $category, array $data): Category
     {
-        $category->update(self::formatCategoryData($data));
+        $category->update($data);
 
         return $category;
     }
