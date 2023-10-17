@@ -14,12 +14,18 @@ class TimeslotService
 
     public static function createTimeslot(array $data): Timeslot
     {
-        return Timeslot::create(self::formatTimeslotData($data));
+        $timeslot = Timeslot::create(self::formatTimeslotData($data));
+        $timeslot->learners()->attach(collect($data['learners'])->pluck('id'));
+        $timeslot->teachers()->attach(collect($data['teachers'])->pluck('id'));
+
+        return $timeslot;
     }
 
     public static function updateTimeslot(Timeslot $timeslot, array $data): Timeslot
     {
         $timeslot->update(self::formatTimeslotData($data));
+        $timeslot->learners()->sync($data['learners']);
+        $timeslot->teachers()->sync($data['teachers']);
 
         return $timeslot;
     }
