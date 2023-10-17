@@ -52,7 +52,7 @@ class Promotion extends Model
 
     public function learners(): BelongsToMany
     {
-        return $this->belongsToMany(Learner::class)
+        return $this->belongsToMany(Learner::class, 'learner_promotion', 'promotion_id', 'learner_id')
             ->withPivot('id')
             ->withTimestamps();
     }

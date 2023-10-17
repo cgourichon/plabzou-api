@@ -4,6 +4,7 @@ use App\Http\Controllers\API\Auth\AuthController;
 use App\Http\Controllers\API\Category\CategoryController;
 use App\Http\Controllers\API\Course\CourseController;
 use App\Http\Controllers\API\Mode\ModeController;
+use App\Http\Controllers\API\Promotion\PromotionController;
 use App\Http\Controllers\API\Status\StatusController;
 use App\Http\Controllers\API\User\UserController;
 use Illuminate\Support\Facades\Route;
@@ -31,5 +32,5 @@ Route::middleware('auth:sanctum')->group(static function () {
     Route::get('modes', [ModeController::class, 'index']);
     Route::apiResource('categories', CategoryController::class);
     Route::apiResource('courses', CourseController::class);
-
+    Route::apiResource('promotions', PromotionController::class);
 });
