@@ -18,6 +18,7 @@ return new class extends Migration
             $table->date('ends_at');
             $table->timestamps();
             $table->unique(['name', 'starts_at', 'ends_at']);
+            $table->softDeletes();
         });
     }
 

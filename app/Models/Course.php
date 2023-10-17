@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Course
@@ -26,6 +27,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  */
 class Course extends Model
 {
+    use SoftDeletes;
+
     protected $table = 'courses';
 
     protected $fillable = [

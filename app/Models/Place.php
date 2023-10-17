@@ -8,9 +8,11 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Place
@@ -24,12 +26,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  *
  * @property City $city
  * @property Collection|Building[] $buildings
- * @property Collection|City[] $cities
  *
  * @package App\Models
  */
 class Place extends Model
 {
+    use SoftDeletes, HasFactory;
+
     protected $table = 'places';
 
     protected $casts = [
@@ -50,13 +53,6 @@ class Place extends Model
     public function buildings(): BelongsToMany
     {
         return $this->belongsToMany(Building::class)
-            ->withPivot('id')
-            ->withTimestamps();
-    }
-
-    public function cities(): BelongsToMany
-    {
-        return $this->belongsToMany(City::class, 'place_city')
             ->withPivot('id')
             ->withTimestamps();
     }

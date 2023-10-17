@@ -19,6 +19,7 @@ return new class extends Migration
             $table->dateTime('ends_at');
             $table->boolean('is_validated')->default(false);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

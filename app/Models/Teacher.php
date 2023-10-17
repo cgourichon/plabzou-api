@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Teacher
@@ -31,8 +32,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Teacher extends Model
 {
-    use HasFactory;
-    
+    use HasFactory, SoftDeletes;
+
     public $incrementing = false;
     protected $table = 'teachers';
     protected $primaryKey = 'user_id';
