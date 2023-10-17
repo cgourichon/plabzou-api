@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\Auth\AuthController;
+use App\Http\Controllers\API\Category\CategoryController;
 use App\Http\Controllers\API\Mode\ModeController;
 use App\Http\Controllers\API\Status\StatusController;
 use App\Http\Controllers\API\User\UserController;
@@ -27,4 +28,5 @@ Route::middleware('auth:sanctum')->group(static function () {
     Route::apiResource('users', UserController::class);
     Route::get('statuses', [StatusController::class, 'index']);
     Route::get('modes', [ModeController::class, 'index']);
+    Route::apiResource('categories', CategoryController::class);
 });
