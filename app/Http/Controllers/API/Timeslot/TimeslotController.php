@@ -25,6 +25,8 @@ class TimeslotController extends BaseController
 
     public function show(Timeslot $timeslot)
     {
+        $timeslot->load(['room', 'training', 'teachers', 'learners']);
+
         return $this->success($timeslot->toArray(), 'Créneau récupéré avec succès.');
     }
 
