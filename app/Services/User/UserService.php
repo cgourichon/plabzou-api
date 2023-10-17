@@ -76,4 +76,9 @@ class UserService
     {
         return Mode::all();
     }
+
+    public static function getLearners(): Collection
+    {
+        return User::with(['learner'])->whereHas('learner')->get();
+    }
 }
