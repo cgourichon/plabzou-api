@@ -9,6 +9,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -44,11 +45,9 @@ class Promotion extends Model
         'ends_at'
     ];
 
-    public function courses(): BelongsToMany
+    public function course(): BelongsTo
     {
-        return $this->belongsToMany(Course::class)
-            ->withPivot('id')
-            ->withTimestamps();
+        return $this->belongsTo(Course::class);
     }
 
     public function learners(): BelongsToMany
@@ -56,5 +55,10 @@ class Promotion extends Model
         return $this->belongsToMany(Learner::class)
             ->withPivot('id')
             ->withTimestamps();
+    }
+
+    public function city(): BelongsTo
+    {
+        return $this->belongsTo(City::class);
     }
 }

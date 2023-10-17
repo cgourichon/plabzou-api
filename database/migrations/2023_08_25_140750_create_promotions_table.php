@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('promotions', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('city_id')->nullable()->constrained();
             $table->string('name');
             $table->date('starts_at');
             $table->date('ends_at');
