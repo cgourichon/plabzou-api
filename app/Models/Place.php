@@ -26,7 +26,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *
  * @property City $city
  * @property Collection|Building[] $buildings
- * @property Collection|City[] $cities
  *
  * @package App\Models
  */
