@@ -4,6 +4,7 @@ use App\Http\Controllers\API\Auth\AuthController;
 use App\Http\Controllers\API\Category\CategoryController;
 use App\Http\Controllers\API\Mode\ModeController;
 use App\Http\Controllers\API\Status\StatusController;
+use App\Http\Controllers\API\Training\TrainingController;
 use App\Http\Controllers\API\User\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -29,4 +30,7 @@ Route::middleware('auth:sanctum')->group(static function () {
     Route::get('statuses', [StatusController::class, 'index']);
     Route::get('modes', [ModeController::class, 'index']);
     Route::apiResource('categories', CategoryController::class);
+    Route::apiResource('trainings', TrainingController::class);
 });
+
+
