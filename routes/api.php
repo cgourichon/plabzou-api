@@ -32,5 +32,3 @@ Route::middleware('auth:sanctum')->group(static function () {
     Route::apiResource('categories', CategoryController::class);
     Route::apiResource('trainings', TrainingController::class);
 });
-
-
