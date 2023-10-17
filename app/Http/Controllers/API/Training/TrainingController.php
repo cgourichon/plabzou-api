@@ -13,7 +13,7 @@ class TrainingController extends BaseController
     {
         $trainings = TrainingService::getTrainings();
 
-        return $this->success($trainings->toArray(), 'Formations récupérés avec succès.');
+        return $this->success($trainings->toArray(), 'Formations récupérées avec succès.');
     }
 
     public function store(TrainingRequest $request)
