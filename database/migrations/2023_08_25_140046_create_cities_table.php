@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('postcode');
             $table->timestamps();
             $table->unique(['name', 'postcode']);
+            $table->softDeletes();
         });
     }
 

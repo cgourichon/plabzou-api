@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Promotion
@@ -28,6 +29,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  */
 class Promotion extends Model
 {
+    use SoftDeletes;
+
     protected $table = 'promotions';
 
     protected $casts = [
