@@ -39,6 +39,6 @@ class CategoryController extends BaseController
     {
         $category->delete();
 
-        return $this->success([], 'Catégorie supprimée avec succès.', 204);
+        return $this->success([], 'Catégorie supprimée avec succès.');
     }
 }
