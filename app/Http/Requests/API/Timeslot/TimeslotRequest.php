@@ -29,9 +29,9 @@ class TimeslotRequest extends FormRequest
             'ends_at' => ['required', 'date'],
             'is_validated' => ['nullable', 'boolean'],
             'learners' => ['required', 'array'],
-            'learners.*.id' => ['required', 'exists:users,id'],
+            'learners.*.user_id' => ['required', 'exists:users,id'],
             'teachers' => ['required', 'array'],
-            'teachers.*.id' => ['required', 'exists:users,id'],
+            'teachers.*.user_id' => ['required', 'exists:users,id'],
         ];
     }
 
@@ -56,12 +56,12 @@ class TimeslotRequest extends FormRequest
             'is_validated.boolean' => 'La validation doit être un booléen.',
             'learners.required' => 'Les apprenants sont obligatoires.',
             'learners.array' => 'Les apprenants doivent être un tableau.',
-            'learners.*.id.required' => 'L\'apprenant est obligatoire.',
-            'learners.*.id.exists' => 'L\'apprenant n\'existe pas.',
+            'learners.*.user_id.required' => 'L\'apprenant est obligatoire.',
+            'learners.*.user_id.exists' => 'L\'apprenant n\'existe pas.',
             'teachers.required' => 'Les formateurs sont obligatoires.',
             'teachers.array' => 'Les formateurs doivent être un tableau.',
-            'teachers.*.id.required' => 'Le formateur est obligatoire.',
-            'teachers.*.id.exists' => 'Le formateur n\'existe pas.',
+            'teachers.*.user_id.required' => 'Le formateur est obligatoire.',
+            'teachers.*.user_id.exists' => 'Le formateur n\'existe pas.',
         ];
     }
 }
