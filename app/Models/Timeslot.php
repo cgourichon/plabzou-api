@@ -69,7 +69,7 @@ class Timeslot extends Model
 
     public function learners(): BelongsToMany
     {
-        return $this->belongsToMany(Learner::class)
+        return $this->belongsToMany(Learner::class, 'learner_timeslot', 'timeslot_id', 'learner_id')
             ->withPivot('id')
             ->withTimestamps();
     }
@@ -81,7 +81,7 @@ class Timeslot extends Model
 
     public function teachers(): BelongsToMany
     {
-        return $this->belongsToMany(Teacher::class)
+        return $this->belongsToMany(Teacher::class, 'teacher_timeslot', 'timeslot_id', 'teacher_id')
             ->withPivot('id')
             ->withTimestamps();
     }
