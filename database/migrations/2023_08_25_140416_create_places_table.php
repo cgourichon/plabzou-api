@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->foreignId('city_id')->constrained();
             $table->timestamps();
             $table->unique(['name', 'street_address', 'city_id']);
+            $table->softDeletes();
         });
     }
 

@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->foreignId('user_id')->primary()->constrained()->cascadeOnDelete();
             $table->enum('status', ['Interne', 'Externe']);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

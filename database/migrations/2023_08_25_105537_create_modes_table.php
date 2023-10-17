@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->enum('name', ['Présentiel', 'Distanciel', 'Mixte']);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

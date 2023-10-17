@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Place
@@ -30,6 +31,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  */
 class Place extends Model
 {
+    use SoftDeletes;
+
     protected $table = 'places';
 
     protected $casts = [

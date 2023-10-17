@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->foreignId('recipient_id')->constrained('users');
             $table->text('message');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -12,6 +12,7 @@ return new class extends Migration {
             $table->foreignId('place_id')->constrained();
             $table->foreignId('city_id')->constrained();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->string('name');
             $table->integer('seats_number');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
