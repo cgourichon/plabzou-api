@@ -18,8 +18,8 @@ class CityFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->unique()->city,
-            'postcode' => str_replace(' ', '', $this->faker->unique()->postcode),
+            'name' => $this->faker->unique()->city(),
+            'postcode' => str_replace(' ', '', $this->faker->unique()->postcode()),
         ];
     }
 }
