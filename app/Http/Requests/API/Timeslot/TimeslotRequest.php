@@ -27,7 +27,7 @@ class TimeslotRequest extends FormRequest
             'room' => ['required', 'integer', 'exists:rooms,id'],
             'starts_at' => ['required', 'date'],
             'ends_at' => ['required', 'date'],
-            'is_validated' => ['required', 'boolean']
+            'is_validated' => ['nullable', 'boolean']
         ];
     }
 
@@ -49,7 +49,6 @@ class TimeslotRequest extends FormRequest
             'starts_at.date' => 'La date de début doit être une date.',
             'ends_at.required' => 'La date de fin est obligatoire.',
             'ends_at.date' => 'La date de fin doit être une date.',
-            'is_validated.required' => 'La validation est obligatoire.',
             'is_validated.boolean' => 'La validation doit être un booléen.'
         ];
     }
