@@ -43,6 +43,8 @@ class AdministrativeEmployee extends Model
         'is_super_admin'
     ];
 
+    protected $appends = ['full_name'];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -51,5 +53,10 @@ class AdministrativeEmployee extends Model
     public function requests(): HasMany
     {
         return $this->hasMany(Request::class);
+    }
+
+    public function getFullNameAttribute(): string
+    {
+        return $this->user->full_name;
     }
 }
