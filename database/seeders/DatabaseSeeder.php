@@ -15,6 +15,10 @@ class DatabaseSeeder extends Seeder
             ModeSeeder::class,
             UserSeeder::class,
             CategorySeeder::class,
+            CitySeeder::class,
+            PlaceSeeder::class,
+            BuildingSeeder::class,
+            RoomSeeder::class
         ]);
     }
 }
