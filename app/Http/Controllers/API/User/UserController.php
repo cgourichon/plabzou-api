@@ -43,6 +43,6 @@ class UserController extends BaseController
     {
         $user->delete();
 
-        return $this->success([], 'Utilisateur supprimé avec succès.', 204);
+        return $this->success([], 'Utilisateur supprimé avec succès.');
     }
 }
