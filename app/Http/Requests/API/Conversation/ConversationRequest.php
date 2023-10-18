@@ -26,4 +26,16 @@ class ConversationRequest extends FormRequest
             'teacher_id' => 'unique:conversations,teacher_id'
         ];
     }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'teacher_id.unique' => 'Une conversation existe déjà avec cette personne',
+        ];
+    }
 }
