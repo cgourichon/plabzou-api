@@ -31,19 +31,19 @@ class Message extends Model
 
     protected $table = 'messages';
 
-    protected $casts = [
-        'sender_id' => 'int',
-        'recipient_id' => 'int'
-    ];
-
     protected $fillable = [
         'sender_id',
-        'recipient_id',
+        'conversation_id',
         'message'
     ];
 
-    public function user(): BelongsTo
+    public function sender(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'sender_id');
+        return $this->belongsTo(User::class);
+    }
+
+    public function conversation(): BelongsTo
+    {
+        return $this->belongsTo(Conversation::class, 'conversation_id', 'id');
     }
 }

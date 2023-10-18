@@ -32,7 +32,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Teacher extends Model
 {
     use HasFactory;
-    
+
     public $incrementing = false;
     protected $table = 'teachers';
     protected $primaryKey = 'user_id';

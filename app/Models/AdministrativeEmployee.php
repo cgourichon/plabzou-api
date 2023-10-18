@@ -52,8 +52,5 @@ class AdministrativeEmployee extends Model
         return $this->hasMany(Request::class);
     }
 
-    public function getAdministrativeEmployeeMessageAttribute()
-    {
 
-    }
 }
