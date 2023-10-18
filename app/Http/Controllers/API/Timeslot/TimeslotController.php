@@ -6,6 +6,8 @@ use App\Http\Controllers\API\BaseController;
 use App\Http\Requests\API\Timeslot\TimeslotRequest;
 use App\Models\Timeslot;
 use App\Services\Timeslot\TimeslotService;
+use Exception;
+use InvalidArgumentException;
 
 class TimeslotController extends BaseController
 {
@@ -18,9 +20,19 @@ class TimeslotController extends BaseController
 
     public function store(TimeslotRequest $request)
     {
-        $timeslot = TimeslotService::createTimeslot($request->validated());
+        $validatedData = $request->validated();
 
-        return $this->success($timeslot->toArray(), 'Créneau créé avec succès.');
+        try {
+            TimeslotService::checkTimeslotAvailability($validatedData);
+
+            $timeslot = TimeslotService::createTimeslot($validatedData);
+
+            return $this->success($timeslot->toArray(), 'Créneau créé avec succès.');
+        } catch (InvalidArgumentException $e) {
+            return $this->error($e->getMessage(), 400);
+        } catch (Exception $e) {
+            return $this->error('Une erreur est survenue lors de la création du créneau.');
+        }
     }
 
     public function show(Timeslot $timeslot)
@@ -32,9 +44,19 @@ class TimeslotController extends BaseController
 
     public function update(TimeslotRequest $request, Timeslot $timeslot)
     {
-        $timeslot = TimeslotService::updateTimeslot($timeslot, $request->validated());
+        $validatedData = $request->validated();
 
-        return $this->success($timeslot->toArray(), 'Créneau mis à jour avec succès.');
+        try {
+            TimeslotService::checkTimeslotAvailability($validatedData, $timeslot);
+
+            $timeslot = TimeslotService::updateTimeslot($timeslot, $validatedData);
+
+            return $this->success($timeslot->toArray(), 'Créneau mis à jour avec succès.');
+        } catch (InvalidArgumentException $e) {
+            return $this->error($e->getMessage(), 400);
+        } catch (Exception $e) {
+            return $this->error('Une erreur est survenue lors de la création du créneau.');
+        }
     }
 
     public function destroy(Timeslot $timeslot)
