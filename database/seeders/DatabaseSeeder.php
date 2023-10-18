@@ -19,7 +19,9 @@ class DatabaseSeeder extends Seeder
             CitySeeder::class,
             PlaceSeeder::class,
             BuildingSeeder::class,
-            RoomSeeder::class
+            RoomSeeder::class,
+            TrainingSeeder::class,
+            TimeslotSeeder::class,
         ]);
     }
 }

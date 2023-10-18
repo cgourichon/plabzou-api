@@ -14,6 +14,14 @@ class UserService
         return User::with(['administrativeEmployee', 'teacher', 'learner'])->get();
     }
 
+    public static function createUser(array $data): User
+    {
+        $user = User::create(self::formatUserData($data));
+        self::fillUser($user, $data);
+
+        return $user;
+    }
+
     private static function formatUserData(array $data): array
     {
         $data['first_name'] = ucwords(strtolower($data['first_name']));
@@ -50,14 +58,6 @@ class UserService
         }
     }
 
-    public static function createUser(array $data): User
-    {
-        $user = User::create(self::formatUserData($data));
-        self::fillUser($user, $data);
-
-        return $user;
-    }
-
     public static function updateUser(User $user, array $data): User
     {
         $user->fill(self::formatUserData($data));
@@ -75,5 +75,15 @@ class UserService
     public static function getLearnerModes(): Collection
     {
         return Mode::all();
+    }
+
+    public static function getLearners(): Collection
+    {
+        return User::with(['learner'])->whereHas('learner')->get();
+    }
+
+    public static function getTeachers(): Collection
+    {
+        return User::with(['teacher'])->whereHas('teacher')->get();
     }
 }

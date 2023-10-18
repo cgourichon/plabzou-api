@@ -8,6 +8,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -20,8 +21,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $id
  * @property int $training_id
  * @property int $room_id
- * @property Carbon $start_date
- * @property Carbon $end_date
+ * @property Carbon $starts_at
+ * @property Carbon $ends_at
  * @property bool $is_validated
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -36,23 +37,23 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Timeslot extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, HasFactory;
 
     protected $table = 'timeslots';
 
     protected $casts = [
         'training_id' => 'int',
         'room_id' => 'int',
-        'start_date' => 'datetime',
-        'end_date' => 'datetime',
+        'starts_at' => 'datetime',
+        'ends_at' => 'datetime',
         'is_validated' => 'bool'
     ];
 
     protected $fillable = [
         'training_id',
         'room_id',
-        'start_date',
-        'end_date',
+        'starts_at',
+        'ends_at',
         'is_validated'
     ];
 
@@ -68,7 +69,7 @@ class Timeslot extends Model
 
     public function learners(): BelongsToMany
     {
-        return $this->belongsToMany(Learner::class)
+        return $this->belongsToMany(Learner::class, 'learner_timeslot', 'timeslot_id', 'learner_id')
             ->withPivot('id')
             ->withTimestamps();
     }
@@ -80,7 +81,7 @@ class Timeslot extends Model
 
     public function teachers(): BelongsToMany
     {
-        return $this->belongsToMany(Teacher::class)
+        return $this->belongsToMany(Teacher::class, 'teacher_timeslot', 'timeslot_id', 'teacher_id')
             ->withPivot('id')
             ->withTimestamps();
     }
