@@ -45,6 +45,8 @@ class Teacher extends Model
         'status'
     ];
 
+    protected $appends = ['full_name'];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -67,5 +69,10 @@ class Teacher extends Model
         return $this->belongsToMany(Training::class)
             ->withPivot('id', 'latest_upgrade_date', 'is_active', 'reason')
             ->withTimestamps();
+    }
+
+    public function getFullNameAttribute(): string
+    {
+        return $this->user->full_name;
     }
 }

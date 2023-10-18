@@ -45,6 +45,8 @@ class Learner extends Model
         'mode_id'
     ];
 
+    protected $appends = ['full_name'];
+
     public function mode(): BelongsTo
     {
         return $this->belongsTo(Mode::class);
@@ -67,5 +69,10 @@ class Learner extends Model
         return $this->belongsToMany(Timeslot::class)
             ->withPivot('id')
             ->withTimestamps();
+    }
+
+    public function getFullNameAttribute(): string
+    {
+        return $this->user->full_name;
     }
 }

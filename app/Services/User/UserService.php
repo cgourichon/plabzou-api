@@ -2,8 +2,6 @@
 
 namespace App\Services\User;
 
-use App\Enums\StatusEnum;
-use App\Models\Mode;
 use App\Models\User;
 use Illuminate\Support\Collection;
 
@@ -12,6 +10,14 @@ class UserService
     public static function getUsers(): Collection
     {
         return User::with(['administrativeEmployee', 'teacher', 'learner'])->get();
+    }
+
+    public static function createUser(array $data): User
+    {
+        $user = User::create(self::formatUserData($data));
+        self::fillUser($user, $data);
+
+        return $user;
     }
 
     private static function formatUserData(array $data): array
@@ -50,14 +56,6 @@ class UserService
         }
     }
 
-    public static function createUser(array $data): User
-    {
-        $user = User::create(self::formatUserData($data));
-        self::fillUser($user, $data);
-
-        return $user;
-    }
-
     public static function updateUser(User $user, array $data): User
     {
         $user->fill(self::formatUserData($data));
@@ -65,15 +63,5 @@ class UserService
         $user->save();
 
         return $user;
-    }
-
-    public static function getTeacherStatuses(): array
-    {
-        return collect(StatusEnum::cases())->pluck('value')->toArray();
-    }
-
-    public static function getLearnerModes(): Collection
-    {
-        return Mode::all();
     }
 }
