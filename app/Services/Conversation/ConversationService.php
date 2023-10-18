@@ -1,14 +1,10 @@
 <?php
 
-namespace App\Services\Message;
+namespace App\Services\Conversation;
 
-use App\Models\AdministrativeEmployee;
-use App\Models\Message;
+use App\Models\Conversation;
 use App\Models\User;
 use App\Services\AdministrativeEmployee\AdministrativeEmployeeService;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use PhpParser\Builder;
 
 class ConversationService
 {
@@ -49,8 +45,21 @@ class ConversationService
                     ->get();
     }*/
 
-    public function createConversation()
+    /**
+     * Permet de créer une nouvelle conversation
+     *
+     * @param array $data
+     * @return mixed
+     */
+    public static function createConversation(array $data)
     {
-        //TODO
+        $conversation = Conversation::create($data);
+
+        //On ajoute les membres de la conversation
+        $adminIds = AdministrativeEmployeeService::getAllAdministrativeEmployeeId();
+        $conversation->members()->sync($adminIds);
+        $conversation->members()->attach($data['teacher_id']);
+
+        return $conversation;
     }
 }
