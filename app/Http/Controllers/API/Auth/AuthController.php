@@ -54,7 +54,7 @@ class AuthController extends BaseController
     public function getAuthenticatedUser(Request $request)
     {
         $user = $request->user();
-        $user->load('administrativeEmployee', 'learner', 'teacher');
+        $user->load('administrativeEmployee', 'learner', 'teacher', 'conversations.messages.sender.teacher');
 
         return $this->success($user->toArray(), 'Utilisateur récupéré avec succès');
     }
