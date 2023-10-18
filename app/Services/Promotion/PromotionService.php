@@ -9,7 +9,7 @@ class PromotionService
 {
     public static function getPromotions(): Collection
     {
-        return Promotion::with(['course', 'learners', 'learners.user', 'city'])
+        return Promotion::with(['course', 'learners', 'city'])
             ->orderByDesc('starts_at')
             ->orderByDesc('ends_at')
             ->get();
