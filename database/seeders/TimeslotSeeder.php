@@ -15,8 +15,11 @@ class TimeslotSeeder extends Seeder
     public function run(): void
     {
         Timeslot::factory()->count(100)->create()->each(function (Timeslot $timeslot) {
-            $teachers = Teacher::inRandomOrder()->limit(rand(1, 5))->get();
-            $timeslot->teachers()->attach($teachers);
+            $teachers = Teacher::whereRelation('trainings', 'trainings.id', '=', $timeslot->training_id)
+                ->inRandomOrder()->limit(rand(1, 10))
+                ->get();
+
+            $timeslot->teachers()->attach($teachers->random(rand(1, $teachers->count())));
 
             $learners = Learner::inRandomOrder()->limit(rand(1, 10))->get();
             $timeslot->learners()->attach($learners);
