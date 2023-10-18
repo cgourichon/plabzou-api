@@ -20,7 +20,7 @@ class TrainingService {
 
             $training->courses()->attach(array_map(fn($course) => $course['id'], $data['courses']));
 
-            $training->teachers()->attach(array_map(fn($teacher) => $teacher['id'], $data['teachers']));
+            $training->teachers()->attach(array_map(fn($teacher) => $teacher['user_id'], $data['teachers']));
 
             DB::commit();
 
@@ -40,7 +40,7 @@ class TrainingService {
 
             $training->courses()->sync(array_map(fn($course) => $course['id'], $data['courses']));
 
-            $training->teachers()->sync(array_map(fn($teacher) => $teacher['id'], $data['teachers']));
+            $training->teachers()->sync(array_map(fn($teacher) => $teacher['user_id'], $data['teachers']));
 
             DB::commit();
 

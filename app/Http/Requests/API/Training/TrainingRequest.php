@@ -44,9 +44,9 @@ class TrainingRequest extends FormRequest
                 'exists:App\Models\Course,id'
             ],
             'teachers' => ['array', 'nullable'],
-            'teachers.*.id' => [
+            'teachers.*.user_id' => [
                 'required',
-                'exists:App\Models\Teacher,id'
+                'exists:App\Models\Teacher,user_id'
             ],
         ];
     }
@@ -66,7 +66,7 @@ class TrainingRequest extends FormRequest
             'duration.integer' => 'La durée doit être un nombre entier.',
             'categories.*.id.exists' => 'Catégorie invalide.',
             'courses.*.id.exists' => 'Formation invalide.',
-            'teachers.*.id.exists' => 'Formateur invalide.',
+            'teachers.*.user_id.exists' => 'Formateur invalide.',
         ];
     }
 }
