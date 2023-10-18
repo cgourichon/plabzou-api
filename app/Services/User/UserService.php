@@ -2,8 +2,6 @@
 
 namespace App\Services\User;
 
-use App\Enums\StatusEnum;
-use App\Models\Mode;
 use App\Models\User;
 use Illuminate\Support\Collection;
 
@@ -65,25 +63,5 @@ class UserService
         $user->save();
 
         return $user;
-    }
-
-    public static function getTeacherStatuses(): array
-    {
-        return collect(StatusEnum::cases())->pluck('value')->toArray();
-    }
-
-    public static function getLearnerModes(): Collection
-    {
-        return Mode::all();
-    }
-
-    public static function getLearners(): Collection
-    {
-        return User::with(['learner'])->whereHas('learner')->get();
-    }
-
-    public static function getTeachers(): Collection
-    {
-        return User::with(['teacher'])->whereHas('teacher')->get();
     }
 }

@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\API\Learner;
 
 use App\Http\Controllers\API\BaseController;
-use App\Services\User\UserService;
+use App\Services\Learner\LearnerService;
 
 class LearnerController extends BaseController
 {
     public function index()
     {
-        $learners = UserService::getLearners();
+        $learners = LearnerService::getLearners();
 
         return $this->success($learners->toArray(), 'Apprenants récupérés avec succès.');
     }
