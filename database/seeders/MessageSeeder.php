@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Message;
-use Database\Factories\MessageFactory;
+use Database\Factories\MessageTeacherFactory;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
