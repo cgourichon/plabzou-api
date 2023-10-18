@@ -66,7 +66,14 @@ class Teacher extends Model
 
     public function trainings(): BelongsToMany
     {
-        return $this->belongsToMany(Training::class)
+        return $this->belongsToMany(
+            Training::class,
+            'teacher_training',
+            'teacher_id',
+            'training_id',
+            'user_id',
+            'id'
+        )
             ->withPivot('id', 'latest_upgrade_date', 'is_active', 'reason')
             ->withTimestamps();
     }
