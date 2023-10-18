@@ -36,13 +36,17 @@ class Promotion extends Model
 
     protected $casts = [
         'starts_at' => 'datetime',
-        'ends_at' => 'datetime'
+        'ends_at' => 'datetime',
+        'course_id' => 'int',
+        'city_id' => 'int'
     ];
 
     protected $fillable = [
         'name',
         'starts_at',
-        'ends_at'
+        'ends_at',
+        'course_id',
+        'city_id'
     ];
 
     public function course(): BelongsTo

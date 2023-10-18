@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\Auth\AuthController;
 use App\Http\Controllers\API\Category\CategoryController;
+use App\Http\Controllers\API\City\CityController;
 use App\Http\Controllers\API\Course\CourseController;
 use App\Http\Controllers\API\Learner\LearnerController;
 use App\Http\Controllers\API\Mode\ModeController;
@@ -43,4 +44,5 @@ Route::middleware('auth:sanctum')->group(static function () {
     Route::get('/rooms', [RoomController::class, 'index']);
     Route::get('/learners', [LearnerController::class, 'index']);
     Route::get('/teachers', [TeacherController::class, 'index']);
+    Route::get('/cities', [CityController::class, 'index']);
 });
