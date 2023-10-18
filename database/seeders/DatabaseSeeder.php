@@ -14,6 +14,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             ModeSeeder::class,
             UserSeeder::class,
+            ConversationSeeder::class,
+            //MessageSeeder::class
         ]);
     }
 }
