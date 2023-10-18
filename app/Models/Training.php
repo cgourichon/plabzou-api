@@ -8,9 +8,12 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Training
@@ -30,6 +33,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Training extends Model
 {
+    use SoftDeletes, HasFactory;
+
     protected $table = 'trainings';
 
     protected $casts = [
@@ -43,7 +48,7 @@ class Training extends Model
 
     public function teachers(): BelongsToMany
     {
-        return $this->belongsToMany(Teacher::class)
+        return $this->belongsToMany(Teacher::class, 'teacher_training', 'training_id', 'teacher_id')
             ->withPivot('id', 'latest_upgrade_date', 'is_active', 'reason')
             ->withTimestamps();
     }

@@ -9,6 +9,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Request
@@ -30,6 +31,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class Request extends Model
 {
+    use SoftDeletes;
+
     protected $table = 'requests';
 
     protected $casts = [

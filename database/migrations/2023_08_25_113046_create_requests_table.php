@@ -19,6 +19,7 @@ return new class extends Migration
             $table->boolean('is_approved')->default(false);
             $table->string('comment')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

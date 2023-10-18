@@ -14,6 +14,14 @@ class DatabaseSeeder extends Seeder
         $this->call([
             ModeSeeder::class,
             UserSeeder::class,
+            CategorySeeder::class,
+            CourseSeeder::class,
+            CitySeeder::class,
+            PlaceSeeder::class,
+            BuildingSeeder::class,
+            RoomSeeder::class,
+            TrainingSeeder::class,
+            TimeslotSeeder::class,
             ConversationSeeder::class,
             //MessageSeeder::class
         ]);

@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->foreignId('user_id')->primary()->constrained()->cascadeOnDelete();
             $table->boolean('is_super_admin')->default(false);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

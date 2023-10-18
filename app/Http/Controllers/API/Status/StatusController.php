@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\API\Status;
 
 use App\Http\Controllers\API\BaseController;
-use App\Services\User\UserService;
+use App\Services\Teacher\TeacherService;
 
 class StatusController extends BaseController
 {
     public function index()
     {
-        $statuses = UserService::getTeacherStatuses();
+        $statuses = TeacherService::getTeacherStatuses();
 
         return $this->success($statuses, 'Statuts récupérés avec succès.');
     }

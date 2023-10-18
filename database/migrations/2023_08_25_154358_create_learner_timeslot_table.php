@@ -12,6 +12,7 @@ return new class extends Migration {
             $table->foreignId('learner_id')->constrained('learners', 'user_id');
             $table->foreignId('timeslot_id')->constrained();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

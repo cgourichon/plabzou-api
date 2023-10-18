@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Teacher
@@ -31,7 +32,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Teacher extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     public $incrementing = false;
     protected $table = 'teachers';
@@ -43,6 +44,8 @@ class Teacher extends Model
     protected $fillable = [
         'status'
     ];
+
+    protected $appends = ['full_name'];
 
     public function user(): BelongsTo
     {
@@ -66,5 +69,10 @@ class Teacher extends Model
         return $this->belongsToMany(Training::class)
             ->withPivot('id', 'latest_upgrade_date', 'is_active', 'reason')
             ->withTimestamps();
+    }
+
+    public function getFullNameAttribute(): string
+    {
+        return $this->user->full_name;
     }
 }

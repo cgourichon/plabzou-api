@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class AdministrativeEmployee
@@ -28,7 +29,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class AdministrativeEmployee extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     public $incrementing = false;
     protected $table = 'administrative_employees';
@@ -42,6 +43,8 @@ class AdministrativeEmployee extends Model
         'is_super_admin'
     ];
 
+    protected $appends = ['full_name'];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -52,5 +55,8 @@ class AdministrativeEmployee extends Model
         return $this->hasMany(Request::class);
     }
 
-
+    public function getFullNameAttribute(): string
+    {
+        return $this->user->full_name;
+    }
 }

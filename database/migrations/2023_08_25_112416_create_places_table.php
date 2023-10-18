@@ -5,18 +5,27 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
-        Schema::create('place_city', function (Blueprint $table) {
+        Schema::create('places', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('place_id')->constrained();
+            $table->string('name');
+            $table->string('street_address');
             $table->foreignId('city_id')->constrained();
             $table->timestamps();
+            $table->unique(['name', 'street_address', 'city_id']);
+            $table->softDeletes();
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
-        Schema::dropIfExists('place_city');
+        Schema::dropIfExists('places');
     }
 };

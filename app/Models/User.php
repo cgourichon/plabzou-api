@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
 
@@ -38,7 +39,7 @@ use Laravel\Sanctum\HasApiTokens;
  */
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory;
+    use HasApiTokens, HasFactory, SoftDeletes;
 
     protected $table = 'users';
 
@@ -61,6 +62,8 @@ class User extends Authenticatable
         'remember_token'
     ];
 
+    protected $appends = ['full_name', 'user_id'];
+
     public function administrativeEmployee(): HasOne
     {
         return $this->hasOne(AdministrativeEmployee::class);
@@ -79,5 +82,15 @@ class User extends Authenticatable
     public function conversations(): BelongsToMany
     {
         return $this->belongsToMany(Conversation::class);
+    }
+
+    public function getFullNameAttribute(): string
+    {
+        return "{$this->first_name} {$this->last_name}";
+    }
+
+    public function getUserIdAttribute(): int
+    {
+        return $this->id;
     }
 }

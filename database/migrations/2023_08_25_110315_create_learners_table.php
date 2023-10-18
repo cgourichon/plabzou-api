@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->foreignId('user_id')->primary()->constrained()->cascadeOnDelete();
             $table->foreignId('mode_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

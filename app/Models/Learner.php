@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Learner
@@ -30,7 +31,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  */
 class Learner extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     public $incrementing = false;
     protected $table = 'learners';
@@ -43,6 +44,8 @@ class Learner extends Model
     protected $fillable = [
         'mode_id'
     ];
+
+    protected $appends = ['full_name'];
 
     public function mode(): BelongsTo
     {
@@ -66,5 +69,10 @@ class Learner extends Model
         return $this->belongsToMany(Timeslot::class)
             ->withPivot('id')
             ->withTimestamps();
+    }
+
+    public function getFullNameAttribute(): string
+    {
+        return $this->user->full_name;
     }
 }

@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->foreignId('conversation_id')->constrained('conversations');
             $table->text('message');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
