@@ -18,10 +18,10 @@ class AdministrativeEmployeeService
                         ->get();
     }
 
-
+       */
     public static function getAllAdministrativeEmployeeId(): Collection
     {
         return AdministrativeEmployee::all()->pluck('user_id');
     }
-    */
+
 }
