@@ -89,6 +89,12 @@ class PromotionService
         }
     }
 
+    public static function deletePromotion(Promotion $promotion): void
+    {
+        $promotion->learnerPromotion()->delete();
+        $promotion->delete();
+    }
+
     private static function formatPromotionData(array $data): array
     {
         $formattedData = [

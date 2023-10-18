@@ -39,4 +39,12 @@ class PromotionController extends BaseController
         $promotion = PromotionService::updatePromotion($promotion, $request->validated());
         return $this->success($promotion->toArray(), 'Promotion mise à jour avec succès.');
     }
+
+    public function destroy(Promotion $promotion): JsonResponse
+    {
+        $promotion->load('learners');
+        PromotionService::deletePromotion($promotion);
+
+        return $this->success([], 'Promotion supprimée avec succès');
+    }
 }
