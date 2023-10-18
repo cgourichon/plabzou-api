@@ -2,7 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\AdministrativeEmployee;
 use App\Models\Conversation;
+use App\Models\Teacher;
+use App\Services\AdministrativeEmployee\AdministrativeEmployeeService;
 use Illuminate\Database\Seeder;
 
 class ConversationSeeder extends Seeder
@@ -12,6 +15,15 @@ class ConversationSeeder extends Seeder
      */
     public function run(): void
     {
-        Conversation::factory()->count(50)->create();
+        $teacher = Teacher::inRandomOrder()->first()->user_id;
+        $admins = AdministrativeEmployeeService::getAllAdministrativeEmployeeId();
+        $all = $admins->merge($teacher);
+
+        Conversation::factory()
+            ->count(10)
+            ->create()
+            ->each(function ($conversation) use ($all) {
+                $conversation->members()->sync($all);
+            });
     }
 }

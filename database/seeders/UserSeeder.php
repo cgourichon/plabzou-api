@@ -18,11 +18,6 @@ class UserSeeder extends Seeder
     {
         AdministrativeEmployee::factory()->count(10)->create();
         Teacher::factory()
-            /*
-            ->hasMessages(4, [
-                'conversation_id' => Conversation::all()->random()->id,
-                'message' => 'Test de message de la part du formateur'
-            ])*/
             ->count(15)
             ->create();
 

@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
             TrainingSeeder::class,
             TimeslotSeeder::class,
             ConversationSeeder::class,
-            //MessageSeeder::class
+            MessageSeeder::class
         ]);
     }
 }

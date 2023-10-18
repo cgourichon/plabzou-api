@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
-use App\Models\AdministrativeEmployee;
 use App\Models\Conversation;
 use App\Models\Teacher;
+use App\Services\AdministrativeEmployee\AdministrativeEmployeeService;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,10 +19,14 @@ class MessageFactory extends Factory
      */
     public function definition(): array
     {
+        $teacher = Teacher::inRandomOrder()->first()->user_id;
+        $admins = AdministrativeEmployeeService::getAllAdministrativeEmployeeId();
+        $all = $admins->merge($teacher);
+
         return [
-            'sender_id' => AdministrativeEmployee::all()->random()->user_id,
-            'conversation_id' => Conversation::all()->random()->user_id,
-            'message' => $this->faker->text()
+            'sender_id' => $all->random(),
+            'conversation_id' => Conversation::all()->random()->first()->id,
+            'message' => $this->faker->sentence()
         ];
     }
 }

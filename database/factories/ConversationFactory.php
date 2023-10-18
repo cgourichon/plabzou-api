@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Teacher;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +18,7 @@ class ConversationFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->name
+            'teacher_id' => Teacher::inRandomOrder()->first()->user_id
         ];
     }
 }
