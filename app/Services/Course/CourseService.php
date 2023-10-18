@@ -17,6 +17,11 @@ class CourseService
         return Course::create($data);
     }
 
+    public static function findCourseById(int $id): Course
+    {
+        return Course::findOrFail($id);
+    }
+
     public static function updateCourse(Course $course, array $data): Course
     {
         $course->update($data);

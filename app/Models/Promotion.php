@@ -9,7 +9,9 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -35,26 +37,38 @@ class Promotion extends Model
 
     protected $casts = [
         'starts_at' => 'datetime',
-        'ends_at' => 'datetime'
+        'ends_at' => 'datetime',
+        'course_id' => 'int',
+        'city_id' => 'int'
     ];
 
     protected $fillable = [
         'name',
         'starts_at',
-        'ends_at'
+        'ends_at',
+        'course_id',
+        'city_id'
     ];
 
-    public function courses(): BelongsToMany
+    public function course(): BelongsTo
     {
-        return $this->belongsToMany(Course::class)
-            ->withPivot('id')
-            ->withTimestamps();
+        return $this->belongsTo(Course::class);
     }
 
     public function learners(): BelongsToMany
     {
-        return $this->belongsToMany(Learner::class)
+        return $this->belongsToMany(Learner::class, 'learner_promotion', 'promotion_id', 'learner_id')
             ->withPivot('id')
             ->withTimestamps();
+    }
+
+    public function learnerPromotion(): HasMany
+    {
+        return $this->hasMany(LearnerPromotion::class);
+    }
+
+    public function city(): BelongsTo
+    {
+        return $this->belongsTo(City::class);
     }
 }
