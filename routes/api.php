@@ -2,9 +2,9 @@
 
 use App\Http\Controllers\API\Auth\AuthController;
 use App\Http\Controllers\API\Category\CategoryController;
+use App\Http\Controllers\API\Conversation\ConversationController;
 use App\Http\Controllers\API\Course\CourseController;
 use App\Http\Controllers\API\Learner\LearnerController;
-use App\Http\Controllers\API\Message\ConversationController;
 use App\Http\Controllers\API\Message\MessageController;
 use App\Http\Controllers\API\Mode\ModeController;
 use App\Http\Controllers\API\Room\RoomController;
@@ -33,15 +33,17 @@ Route::prefix('auth')->group(static function () {
 });
 
 Route::middleware('auth:sanctum')->group(static function () {
-    Route::apiResource('users', UserController::class);
-    Route::apiResource('conversations', ConversationController::class);
-    Route::apiResource('messages', MessageController::class);
+    Route::apiResources([
+        'users', UserController::class,
+        'conversations', ConversationController::class,
+        'messages', MessageController::class,
+        'categories', CategoryController::class,
+        'courses', CourseController::class,
+        'trainings', TrainingController::class,
+        'timeslots', TimeslotController::class
+    ]);
     Route::get('statuses', [StatusController::class, 'index']);
     Route::get('modes', [ModeController::class, 'index']);
-    Route::apiResource('categories', CategoryController::class);
-    Route::apiResource('courses', CourseController::class);
-    Route::apiResource('trainings', TrainingController::class);
-    Route::apiResource('timeslots', TimeslotController::class);
     Route::get('/rooms', [RoomController::class, 'index']);
     Route::get('/learners', [LearnerController::class, 'index']);
     Route::get('/teachers', [TeacherController::class, 'index']);
