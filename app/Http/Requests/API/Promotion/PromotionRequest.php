@@ -33,8 +33,8 @@ class PromotionRequest extends FormRequest
             'ends_at' => ['required', 'date', 'after:starts_at'],
             'course' => ['required', 'integer', 'exists:courses,id'],
             'city' => ['nullable', 'integer', 'exists:cities,id'],
-            'learners' => ['required', 'array'],
-            'learners.*.user_id' => ['required', 'exists:users,id'],
+            'learners' => ['nullable', 'array'],
+            'learners.*.user_id' => ['nullable', 'exists:users,id'],
         ];
     }
 
@@ -59,9 +59,7 @@ class PromotionRequest extends FormRequest
             'course.exists' => 'Le cursus n\'existe pas.',
             'city.integer' => 'La ville doit être un entier.',
             'city.exists' => 'La ville n\'existe pas.',
-            'learners.required' => 'Les apprenants sont obligatoires.',
             'learners.array' => 'Les apprenants doivent être un tableau.',
-            'learners.*.user_id.required' => 'L\'apprenant est obligatoire.',
             'learners.*.user_id.exists' => 'L\'apprenant n\'existe pas.',
         ];
     }

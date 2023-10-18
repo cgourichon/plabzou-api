@@ -13,4 +13,9 @@ class CityService
             ->orderBy('name')
             ->get();
     }
+
+    public static function findCityById(int $id): City
+    {
+        return City::findOrFail($id);
+    }
 }
