@@ -69,6 +69,49 @@ class TimeslotService
     }
 
     /**
+     * Récupérer les créneaux avec la même période (entre le début et la fin du créneau)
+     *
+     * @param string $startsAt
+     * @param string $endsAt
+     * @return Collection
+     */
+    private static function getTimeslotsSamePeriod(string $startsAt, string $endsAt): Collection
+    {
+        return Timeslot::with(['learners', 'teachers'])
+            ->where('starts_at', '>=', $startsAt)
+            ->where('ends_at', '<=', $endsAt)
+            ->get();
+    }
+
+    /**
+     * Vérifier la disponibilité d'une salle pour des créneaux
+     *
+     * @param Collection $timeslots
+     * @param int $roomId
+     * @return bool
+     */
+    private static function checkRoomAvailabilityForTimeslots(Collection $timeslots, int $roomId): bool
+    {
+        return $timeslots->where('room_id', $roomId)->isEmpty();
+    }
+
+    /**
+     * Verifier la disponibilité des utilisateurs (apprenants/learners et formateurs/teachers) pour des créneaux
+     *
+     * @param Collection $timeslots
+     * @param array $usersToCheck
+     * @param string $userRelation
+     * @return bool
+     */
+    private static function checkUsersAvailabilityForTimeslots(Collection $timeslots, array $usersToCheck, string $userRelation): bool
+    {
+        $userIdsFromData = collect($usersToCheck)->pluck('user_id');
+        $userIdsFromTimeslots = $timeslots->pluck($userRelation)->flatten()->pluck('user_id');
+
+        return $userIdsFromData->intersect($userIdsFromTimeslots)->isEmpty();
+    }
+
+    /**
      * Vérifier la disponibilité d'un créneau
      *
      * @param array $data
@@ -78,43 +121,24 @@ class TimeslotService
     public static function checkTimeslotAvailability(array $data, ?Timeslot $timeslot = null): void
     {
         // Récupérer les créneaux avec la même période (entre le début et la fin du créneau)
-        $timeslotsSamePeriod = Timeslot::with(['learners', 'teachers'])
-            ->where('starts_at', '>=', $data['starts_at'])
-            ->where('ends_at', '<=', $data['ends_at'])
-            ->get();
+        $timeslotsSamePeriod = self::getTimeslotsSamePeriod($data['starts_at'], $data['ends_at']);
 
         // Vérifier si l'on met à jour un créneau
         if ($timeslot) {
             $timeslotsSamePeriod = $timeslotsSamePeriod->where('id', '!=', $timeslot->id);
         }
 
-        // Récupérer les créneaux avec la même salle
-        $timeslotsSameRoom = $timeslotsSamePeriod->where('room_id', $data['room']);
-
-        // Vérifier la disponibilité de la salle
-        $availableForRoom = $timeslotsSameRoom->isEmpty();
-
-        // Récupérer les id des apprenants et des formateurs
-        $learnerIdsFromData = collect($data['learners'])->pluck('user_id');
-        $learnerIdsFromTimeslots = $timeslotsSamePeriod->pluck('learners')->flatten()->pluck('user_id');
-        $teacherIdsFromData = collect($data['teachers'])->pluck('user_id');
-        $teacherIdsFromTimeslots = $timeslotsSamePeriod->pluck('teachers')->flatten()->pluck('user_id');
-
-        // Vérifier la disponibilité des apprenants et des formateurs
-        $availableForLearners = $learnerIdsFromData->intersect($learnerIdsFromTimeslots)->isEmpty();
-        $availableForTeachers = $teacherIdsFromData->intersect($teacherIdsFromTimeslots)->isEmpty();
-
         // Vérifier si le créneau est disponible et renvoyer une exception si ce n'est pas le cas
 
-        if (!$availableForRoom) {
+        if (!self::checkRoomAvailabilityForTimeslots($timeslotsSamePeriod, $data['room'])) {
             throw new InvalidArgumentException('Le créneau est déjà pris sur cette salle.');
         }
 
-        if (!$availableForLearners) {
+        if (!self::checkUsersAvailabilityForTimeslots($timeslotsSamePeriod, $data['learners'], 'learners')) {
             throw new InvalidArgumentException('Le créneau est déjà pris pour un ou plusieurs apprenants.');
         }
 
-        if (!$availableForTeachers) {
+        if (!self::checkUsersAvailabilityForTimeslots($timeslotsSamePeriod, $data['teachers'], 'teachers')) {
             throw new InvalidArgumentException('Le créneau est déjà pris pour un ou plusieurs formateurs.');
         }
     }
