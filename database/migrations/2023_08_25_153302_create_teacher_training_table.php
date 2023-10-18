@@ -11,7 +11,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('teacher_id')->constrained('teachers', 'user_id');
             $table->foreignId('training_id')->constrained();
-            $table->date('latest_upgrade_date');
+            $table->date('latest_upgrade_date')->nullable();
             $table->boolean('is_active')->default(true);
             $table->string('reason')->nullable();
             $table->timestamps();
