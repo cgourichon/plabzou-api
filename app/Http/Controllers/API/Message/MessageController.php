@@ -11,6 +11,12 @@ use Illuminate\Http\Request;
 
 class MessageController extends BaseController
 {
+    /**
+     * Permet de créer un nouveau message
+     *
+     * @param MessageRequest $request
+     * @return JsonResponse
+     */
     public function store(MessageRequest $request): JsonResponse
     {
         $message = MessageService::createMessage($request->validated());

@@ -8,17 +8,11 @@ use Illuminate\Support\Collection;
 
 class AdministrativeEmployeeService
 {
-
-    /*
-    public static function getAllAdministrativeEmployeeMessage()
-    {
-        $ids = AdministrativeEmployeeService::getAllAdministrativeEmployeeId();
-        return Message::whereIn('sender_id', $ids)
-                        ->orWhereIn('recipient_id', $ids)
-                        ->get();
-    }
-
-       */
+    /**
+     * Permet de récupérer tous les identifiants des admins
+     *
+     * @return Collection
+     */
     public static function getAllAdministrativeEmployeeId(): Collection
     {
         return AdministrativeEmployee::all()->pluck('user_id');

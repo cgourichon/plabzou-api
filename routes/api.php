@@ -35,18 +35,13 @@ Route::prefix('auth')->group(static function () {
 });
 
 Route::middleware('auth:sanctum')->group(static function () {
-    Route::apiResources([
-        'users', UserController::class,
-        'conversations', ConversationController::class,
-        'messages', MessageController::class,
-        'categories', CategoryController::class,
-        'courses', CourseController::class,
-        'trainings', TrainingController::class,
-        'timeslots', TimeslotController::class,
-        'promotions', PromotionController::class
-    ]);
+    Route::apiResource('users', UserController::class);
     Route::get('statuses', [StatusController::class, 'index']);
     Route::get('modes', [ModeController::class, 'index']);
+    Route::apiResource('categories', CategoryController::class);
+    Route::apiResource('courses', CourseController::class);
+    Route::apiResource('trainings', TrainingController::class);
+    Route::apiResource('timeslots', TimeslotController::class);
     Route::get('/rooms', [RoomController::class, 'index']);
     Route::get('/learners', [LearnerController::class, 'index']);
     Route::get('/teachers', [TeacherController::class, 'index']);
