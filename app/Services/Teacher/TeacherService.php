@@ -13,8 +13,13 @@ class TeacherService
         return collect(StatusEnum::cases())->pluck('value')->toArray();
     }
 
-    public static function getTeachers(): Collection
+    public static function getTeachers(array $parameters): Collection
     {
-        return Teacher::all();
+        $query = Teacher::query();
+
+        if (array_key_exists('training', $parameters))
+            $query->whereRelation('trainings', 'trainings.id', '=', $parameters['training']);
+
+        return $query->get();
     }
 }
