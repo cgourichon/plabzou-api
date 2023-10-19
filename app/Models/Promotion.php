@@ -10,9 +10,9 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Promotion
@@ -30,6 +30,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property City|null $city
  * @property Course $course
  * @property Collection|Learner[] $learners
+ * @property Collection|Timeslot[] $timeslots
  *
  * @package App\Models
  */
@@ -71,6 +72,18 @@ class Promotion extends Model
             'learner_promotion',
             'promotion_id',
             'learner_id'
+        )
+            ->withPivot('id', 'deleted_at')
+            ->withTimestamps();
+    }
+
+    public function timeslots(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Timeslot::class,
+            'promotion_timeslot',
+            'promotion_id',
+            'timeslot_id'
         )
             ->withPivot('id', 'deleted_at')
             ->withTimestamps();

@@ -33,6 +33,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property Collection|Learner[] $learners
  * @property Collection|Request[] $requests
  * @property Collection|Teacher[] $teachers
+ * @property Collection|Promotion[] $promotions
  *
  * @package App\Models
  */
@@ -92,6 +93,18 @@ class Timeslot extends Model
             'teacher_timeslot',
             'timeslot_id',
             'teacher_id'
+        )
+            ->withPivot('id', 'deleted_at')
+            ->withTimestamps();
+    }
+
+    public function promotions(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Promotion::class,
+            'promotion_timeslot',
+            'timeslot_id',
+            'promotion_id'
         )
             ->withPivot('id', 'deleted_at')
             ->withTimestamps();
