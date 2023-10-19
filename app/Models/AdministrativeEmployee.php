@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property bool $is_super_admin
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property string|null $deleted_at
  *
  * @property User $user
  * @property Collection|Request[] $requests
@@ -29,7 +30,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class AdministrativeEmployee extends Model
 {
-    use HasFactory, SoftDeletes;
+    use SoftDeletes, HasFactory;
 
     public $incrementing = false;
     protected $table = 'administrative_employees';

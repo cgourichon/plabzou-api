@@ -39,6 +39,7 @@ Route::middleware('auth:sanctum')->group(static function () {
     Route::apiResource('users', UserController::class);
     Route::apiResource('promotions', PromotionController::class);
     Route::apiResource('messages', MessageController::class);
+    Route::apiResource('conversations', ConversationController::class);
     Route::get('statuses', [StatusController::class, 'index']);
     Route::get('modes', [ModeController::class, 'index']);
     Route::apiResource('categories', CategoryController::class);
@@ -46,7 +47,13 @@ Route::middleware('auth:sanctum')->group(static function () {
     Route::apiResource('trainings', TrainingController::class);
     Route::apiResource('timeslots', TimeslotController::class);
     Route::get('/rooms', [RoomController::class, 'index']);
-    Route::get('/learners', [LearnerController::class, 'index']);
-    Route::get('/teachers', [TeacherController::class, 'index']);
+    Route::prefix('learners')->controller(LearnerController::class)->group(static function () {
+        Route::get('', 'index');
+        Route::get('{learner}', 'show');
+    });
+    Route::prefix('teachers')->controller(TeacherController::class)->group(static function () {
+        Route::get('', 'index');
+        Route::get('{teacher}', 'show');
+    });
     Route::get('/cities', [CityController::class, 'index']);
 });

@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $name
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property string|null $deleted_at
  *
  * @property Collection|Training[] $trainings
  *
@@ -27,7 +28,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Category extends Model
 {
-    use HasFactory, SoftDeletes;
+    use SoftDeletes, HasFactory;
 
     protected $table = 'categories';
 
@@ -37,8 +38,13 @@ class Category extends Model
 
     public function trainings(): BelongsToMany
     {
-        return $this->belongsToMany(Training::class, 'training_category')
-            ->withPivot('id')
+        return $this->belongsToMany(
+            Training::class,
+            'training_category',
+            'category_id',
+            'training_id'
+        )
+            ->withPivot('id', 'deleted_at')
             ->withTimestamps();
     }
 }

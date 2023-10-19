@@ -10,9 +10,9 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Course
@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $name
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property string|null $deleted_at
  *
  * @property Collection|Promotion[] $promotions
  * @property Collection|Training[] $trainings
@@ -29,7 +30,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Course extends Model
 {
-    use HasFactory, SoftDeletes;
+    use SoftDeletes, HasFactory;
 
     protected $table = 'courses';
 
@@ -44,8 +45,13 @@ class Course extends Model
 
     public function trainings(): BelongsToMany
     {
-        return $this->belongsToMany(Training::class, 'training_course', 'training_id', 'course_id')
-            ->withPivot('id')
+        return $this->belongsToMany(
+            Training::class,
+            'training_course',
+            'course_id',
+            'training_id'
+        )
+            ->withPivot('id', 'deleted_at')
             ->withTimestamps();
     }
 }
