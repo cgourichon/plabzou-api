@@ -8,6 +8,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -24,14 +25,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  *
- * @property Collection|Course[] $courses
+ * @property Course $course
  * @property Collection|Learner[] $learners
  *
  * @package App\Models
  */
 class Promotion extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'promotions';
 
@@ -49,6 +50,8 @@ class Promotion extends Model
         'course_id',
         'city_id'
     ];
+
+    protected  $with = ['course'];
 
     public function course(): BelongsTo
     {

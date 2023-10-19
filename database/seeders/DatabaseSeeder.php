@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Promotion;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -21,6 +22,7 @@ class DatabaseSeeder extends Seeder
             BuildingSeeder::class,
             RoomSeeder::class,
             TrainingSeeder::class,
+            PromotionSeeder::class,
             TimeslotSeeder::class,
         ]);
     }
