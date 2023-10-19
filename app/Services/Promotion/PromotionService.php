@@ -7,6 +7,7 @@ use App\Models\Course;
 use App\Models\Promotion;
 use App\Services\City\CityService;
 use App\Services\Course\CourseService;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -25,8 +26,20 @@ class PromotionService
             });
         }
 
-        return $query->get();
+        // eager load pour optimiser
+        if (array_key_exists('advancement', $parameters) && $parameters['advancement']) {
+            $query->with(['course.trainings', 'timeslots']);
+        }
+
+        $promotions = $query->get();
+
+        if (array_key_exists('advancement', $parameters) && $parameters['advancement']) {
+            foreach ($promotions as $promotion) self::calculatePromotionAdvancement($promotion);
+        }
+
+        return $promotions;
     }
+
 
     /**
      * @throws \Exception
@@ -115,5 +128,35 @@ class PromotionService
         if($data['city']) $formattedData['city_id'] = $data['city'];
 
         return $formattedData;
+    }
+
+    private static function calculatePromotionAdvancement(Promotion $promotion) {
+        $trainings = $promotion->course->trainings;
+
+        // sur chaque formation du cursus, on va regarder les créneaux qui correspondent et ajouter le temps passé dessus à la formation
+        foreach($promotion->timeslots as $timeslot) {
+            // on regarde que les créneaux qui correspondent à une formation du cursus
+            $training = $trainings->first(fn($t) => $t->id === $timeslot->training_id);
+
+            if ($training) {
+                $start = Carbon::parse($timeslot->starts_at);
+                $end = Carbon::parse($timeslot->ends_at);
+                $diffInMinutes = $end->diffInMinutes($start);
+
+                $training->advancement = $training->advancement ? $training->advancement+$diffInMinutes : $diffInMinutes;
+            }
+        }
+
+        // calcul de l'avancement global de la promotion dans le cursus et du pourcentage d'avancement pour chaque formation
+        $courseDuration = 0;
+        $promotionAdvancement = 0;
+        foreach ($trainings as $training) {
+            $courseDuration += $training->duration;
+            $promotionAdvancement += $training->advancement;
+
+            $training->percentage = round(($training->advancement / $training->duration) * 100);
+        }
+
+        $promotion->percentage = round(($promotionAdvancement / $courseDuration) * 100);
     }
 }
