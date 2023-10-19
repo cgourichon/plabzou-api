@@ -32,7 +32,7 @@ class TimeslotRequest extends FormRequest
             'learners.*.user_id' => ['required', 'exists:users,id'],
             'teachers' => ['required', 'array'],
             'teachers.*.user_id' => ['required', 'exists:users,id'],
-            'promotions' => ['nullable', 'array'], // est-ce que c'est obligatoire d'avoir une promotion vu qu'il y aura toujours des apprenants ?
+            'promotions' => ['nullable', 'array'],
             'promotions.*.id' => ['required', 'exists:promotions,id'],
         ];
     }
