@@ -7,6 +7,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -27,23 +28,23 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Message extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, HasFactory;
 
     protected $table = 'messages';
 
-    protected $casts = [
-        'sender_id' => 'int',
-        'recipient_id' => 'int'
-    ];
-
     protected $fillable = [
         'sender_id',
-        'recipient_id',
+        'conversation_id',
         'message'
     ];
 
-    public function user(): BelongsTo
+    public function sender(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'sender_id');
+        return $this->belongsTo(User::class);
+    }
+
+    public function conversation(): BelongsTo
+    {
+        return $this->belongsTo(Conversation::class, 'conversation_id', 'id');
     }
 }

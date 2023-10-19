@@ -4,12 +4,13 @@ namespace App\Http\Controllers\API\Learner;
 
 use App\Http\Controllers\API\BaseController;
 use App\Services\Learner\LearnerService;
+use Illuminate\Http\Request;
 
 class LearnerController extends BaseController
 {
-    public function index()
+    public function index(Request $request)
     {
-        $learners = LearnerService::getLearners();
+        $learners = LearnerService::getLearners($request->all());
 
         return $this->success($learners->toArray(), 'Apprenants récupérés avec succès.');
     }

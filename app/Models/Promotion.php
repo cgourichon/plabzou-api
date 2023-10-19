@@ -51,7 +51,7 @@ class Promotion extends Model
         'city_id'
     ];
 
-    protected  $with = ['course'];
+    protected $with = ['course'];
 
     public function course(): BelongsTo
     {

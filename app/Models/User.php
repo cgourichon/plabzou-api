@@ -9,6 +9,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -73,14 +74,14 @@ class User extends Authenticatable
         return $this->hasOne(Learner::class);
     }
 
-    public function messages(): HasMany
-    {
-        return $this->hasMany(Message::class, 'sender_id');
-    }
-
     public function teacher(): HasOne
     {
         return $this->hasOne(Teacher::class);
+    }
+
+    public function conversations(): BelongsToMany
+    {
+        return $this->belongsToMany(Conversation::class)->orderBy('created_at', 'desc');
     }
 
     public function getFullNameAttribute(): string
