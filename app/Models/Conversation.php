@@ -46,7 +46,7 @@ class Conversation extends Model
 
     public function teacher(): BelongsTo
     {
-        return $this->belongsTo(Teacher::class);
+        return $this->belongsTo(Teacher::class, 'teacher_id', 'user_id');
     }
 
     public function members(): BelongsToMany
