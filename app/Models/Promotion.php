@@ -25,14 +25,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  *
- * @property Collection|Course[] $courses
+ * @property Course $course
  * @property Collection|Learner[] $learners
  *
  * @package App\Models
  */
 class Promotion extends Model
 {
-    use SoftDeletes, HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'promotions';
 
@@ -50,6 +50,8 @@ class Promotion extends Model
         'course_id',
         'city_id'
     ];
+
+    protected $with = ['course'];
 
     public function course(): BelongsTo
     {
