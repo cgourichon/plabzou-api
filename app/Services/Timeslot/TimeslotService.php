@@ -116,6 +116,18 @@ class TimeslotService
     }
 
     /**
+     * Vérifier si les dates sont valides (la date de début est inférieure à la date de fin)
+     *
+     * @param string $startsAt
+     * @param string $endsAt
+     * @return bool
+     */
+    private static function checkDates(string $startsAt, string $endsAt): bool
+    {
+        return $startsAt < $endsAt;
+    }
+
+    /**
      * Vérifier la disponibilité d'un créneau
      *
      * @param array $data
@@ -133,6 +145,10 @@ class TimeslotService
         }
 
         // Vérifier si le créneau est disponible et renvoyer une exception si ce n'est pas le cas
+
+        if (!self::checkDates($data['starts_at'], $data['ends_at'])) {
+            throw new InvalidArgumentException('La date de début doit être inférieure à la date de fin.');
+        }
 
         if (!self::checkRoomAvailabilityForTimeslots($timeslotsSamePeriod, $data['room'])) {
             throw new InvalidArgumentException('Le créneau est déjà pris sur cette salle.');
