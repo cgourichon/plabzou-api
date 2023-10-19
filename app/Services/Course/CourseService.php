@@ -3,7 +3,9 @@
 namespace App\Services\Course;
 
 use App\Models\Course;
+use Exception;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class CourseService
 {
@@ -12,9 +14,23 @@ class CourseService
         return Course::all();
     }
 
+    /**
+     * @throws Exception
+     */
     public static function createCourse(array $data): Course
     {
-        return Course::create($data);
+        DB::beginTransaction();
+        try {
+            $course = Course::create(self::formatCourseData($data));
+            $course->trainings()->attach(Collection::make($data['trainings'])->pluck('id'));
+            $course->save();
+            DB::commit();
+
+            return $course;
+        } catch (Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     public static function findCourseById(int $id): Course
@@ -22,15 +38,34 @@ class CourseService
         return Course::findOrFail($id);
     }
 
+    /**
+     * @throws Exception
+     */
     public static function updateCourse(Course $course, array $data): Course
     {
-        $course->update($data);
+        DB::beginTransaction();
+        try {
+            $course->update(self::formatCourseData($data));
+            $course->trainings()->sync(Collection::make($data['trainings'])->pluck('id'));
+            $course->save();
+            DB::commit();
 
-        return $course;
+            return $course;
+        } catch (Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     public static function deleteCourse(Course $course): void
     {
         $course->delete();
+    }
+
+    private static function formatCourseData(array $data): array
+    {
+        return [
+            'name' => $data['name'],
+        ];
     }
 }

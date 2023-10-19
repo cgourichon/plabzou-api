@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\API\Auth\AuthController;
 use App\Http\Controllers\API\Category\CategoryController;
+use App\Http\Controllers\API\Conversation\ConversationController;
 use App\Http\Controllers\API\City\CityController;
 use App\Http\Controllers\API\Course\CourseController;
 use App\Http\Controllers\API\Learner\LearnerController;
+use App\Http\Controllers\API\Message\MessageController;
 use App\Http\Controllers\API\Mode\ModeController;
 use App\Http\Controllers\API\Promotion\PromotionController;
 use App\Http\Controllers\API\Room\RoomController;
@@ -33,12 +35,14 @@ Route::prefix('auth')->group(static function () {
 });
 
 Route::middleware('auth:sanctum')->group(static function () {
+    Route::patch('/users/me', [UserController::class, 'updateCurrent']);
     Route::apiResource('users', UserController::class);
+    Route::apiResource('promotions', PromotionController::class);
+    Route::apiResource('messages', MessageController::class);
     Route::get('statuses', [StatusController::class, 'index']);
     Route::get('modes', [ModeController::class, 'index']);
     Route::apiResource('categories', CategoryController::class);
     Route::apiResource('courses', CourseController::class);
-    Route::apiResource('promotions', PromotionController::class);
     Route::apiResource('trainings', TrainingController::class);
     Route::apiResource('timeslots', TimeslotController::class);
     Route::get('/rooms', [RoomController::class, 'index']);

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Promotion;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -23,6 +24,8 @@ class DatabaseSeeder extends Seeder
             TrainingSeeder::class,
             PromotionSeeder::class,
             TimeslotSeeder::class,
+            ConversationSeeder::class,
+            MessageSeeder::class
         ]);
     }
 }

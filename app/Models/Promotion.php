@@ -32,7 +32,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Promotion extends Model
 {
-    use SoftDeletes, HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'promotions';
 
@@ -50,6 +50,8 @@ class Promotion extends Model
         'course_id',
         'city_id'
     ];
+
+    protected $with = ['course'];
 
     public function course(): BelongsTo
     {

@@ -17,6 +17,7 @@ class PromotionSeeder extends Seeder
         Promotion::factory()->count(5)->create()->each(function (Promotion $promotion) {
             $learners = Learner::inRandomOrder()->limit(rand(1, 3))->get();
             $promotion->learners()->attach($learners);
+            $promotion->course->promotions->add($promotion);
         });
     }
 }
