@@ -30,7 +30,7 @@ class PromotionController extends BaseController
 
     public function show(Promotion $promotion): JsonResponse
     {
-        $promotion->load('learners');
+        $promotion->load(['learners', 'timeslots']);
 
         return $this->success($promotion->toArray(), 'Promotion récupérée avec succès.');
     }
