@@ -73,7 +73,14 @@ class Learner extends Model
 
     public function timeslots(): BelongsToMany
     {
-        return $this->belongsToMany(Timeslot::class)
+        return $this->belongsToMany(
+            Timeslot::class,
+            'learner_timeslot',
+            'learner_id',
+            'timeslot_id',
+            'user_id',
+            'id'
+        )
             ->withPivot('id')
             ->withTimestamps();
     }

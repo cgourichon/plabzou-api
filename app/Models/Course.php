@@ -44,7 +44,12 @@ class Course extends Model
 
     public function trainings(): BelongsToMany
     {
-        return $this->belongsToMany(Training::class, 'training_course', 'training_id', 'course_id')
+        return $this->belongsToMany(
+            Training::class,
+            'training_course',
+            'course_id',
+            'training_id'
+        )
             ->withPivot('id')
             ->withTimestamps();
     }

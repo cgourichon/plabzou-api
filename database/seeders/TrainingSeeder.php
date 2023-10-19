@@ -8,7 +8,7 @@ use App\Models\Teacher;
 use App\Models\Training;
 use Illuminate\Database\Seeder;
 
-class     TrainingSeeder extends Seeder
+class TrainingSeeder extends Seeder
 {
     /**
      * Run the database seeds.

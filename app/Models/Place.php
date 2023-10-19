@@ -45,6 +45,8 @@ class Place extends Model
         'city_id'
     ];
 
+    protected $appends = ['full_address'];
+
     public function city(): BelongsTo
     {
         return $this->belongsTo(City::class);
@@ -55,5 +57,10 @@ class Place extends Model
         return $this->belongsToMany(Building::class)
             ->withPivot('id')
             ->withTimestamps();
+    }
+
+    public function getFullAddressAttribute(): string
+    {
+        return $this->street_address . ', ' . $this->city->name . ' ' . $this->city->postcode;
     }
 }
