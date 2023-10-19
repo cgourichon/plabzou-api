@@ -21,13 +21,14 @@ class TimeslotController extends BaseController
     public function store(TimeslotRequest $request)
     {
         $validatedData = $request->validated();
+        //dump($validatedData);
 
         try {
             TimeslotService::checkTimeslotAvailability($validatedData);
 
             $timeslot = TimeslotService::createTimeslot($validatedData);
 
-            return $this->success($timeslot->toArray(), 'Créneau créé avec succès.');
+            return $this->success($timeslot->toArray(), 'Créneau créé avec succès, demandes envoyées aux formateurs.');
         } catch (InvalidArgumentException $e) {
             return $this->error($e->getMessage(), 400);
         } catch (Exception $e) {

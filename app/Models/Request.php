@@ -39,7 +39,8 @@ class Request extends Model
         'administrative_employee_id' => 'int',
         'teacher_id' => 'int',
         'timeslot_id' => 'int',
-        'is_approved' => 'bool'
+        'is_approved_by_admin' => 'bool',
+        'is_approved_by_teacher' => 'bool'
     ];
 
     protected $fillable = [

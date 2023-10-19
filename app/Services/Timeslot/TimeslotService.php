@@ -3,6 +3,7 @@
 namespace App\Services\Timeslot;
 
 use App\Models\Timeslot;
+use App\Services\Request\RequestService;
 use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -26,6 +27,8 @@ class TimeslotService
             $timeslot = Timeslot::create(self::formatTimeslotData($data));
             $timeslot->learners()->attach(collect($data['learners'])->pluck('user_id'));
             $timeslot->teachers()->attach(collect($data['teachers'])->pluck('user_id'));
+
+            RequestService::createRequests($timeslot);
 
             DB::commit();
 
