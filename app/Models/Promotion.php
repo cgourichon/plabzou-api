@@ -25,7 +25,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  *
- * @property Collection|Course[] $courses
+ * @property Course $course
  * @property Collection|Learner[] $learners
  *
  * @package App\Models

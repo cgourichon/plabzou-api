@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -35,16 +36,19 @@ class Course extends Model
         'name'
     ];
 
-    public function promotions(): BelongsToMany
+    public function promotions(): HasMany
     {
-        return $this->belongsToMany(Promotion::class)
-            ->withPivot('id')
-            ->withTimestamps();
+        return $this->hasMany(Promotion::class);
     }
 
     public function trainings(): BelongsToMany
     {
-        return $this->belongsToMany(Training::class, 'training_course')
+        return $this->belongsToMany(
+            Training::class,
+            'training_course',
+            'course_id',
+            'training_id'
+        )
             ->withPivot('id')
             ->withTimestamps();
     }
