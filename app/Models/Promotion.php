@@ -65,6 +65,13 @@ class Promotion extends Model
             ->withTimestamps();
     }
 
+    public function timeslots(): BelongsToMany
+    {
+        return $this->belongsToMany(Timeslot::class, 'promotion_timeslot', 'promotion_id', 'timeslot_id')
+            ->withPivot('id')
+            ->withTimestamps();
+    }
+
     public function learnerPromotion(): HasMany
     {
         return $this->hasMany(LearnerPromotion::class);

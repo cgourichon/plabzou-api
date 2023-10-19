@@ -8,13 +8,11 @@ use App\Models\Timeslot;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Seeder;
 
-class TimeslotSeeder extends Seeder
-{
+class TimeslotSeeder extends Seeder {
     /**
      * Run the database seeds.
      */
-    public function run(): void
-    {
+    public function run(): void {
         Timeslot::factory()->count(50)->create()->each(function (Timeslot $timeslot) {
             $teachers = Teacher::whereRelation('trainings', 'trainings.id', '=', $timeslot->training_id)
                 ->inRandomOrder()->limit(rand(1, 10))
@@ -27,6 +25,12 @@ class TimeslotSeeder extends Seeder
                     $query->where('training_id', $timeslot->training_id);
                 })->inRandomOrder()->limit(rand(1, 5))->get();
 
+            $promotions = collect();
+            foreach ($learners as $learner) {
+                $promotions->push($learner->promotions->first());
+            }
+
+            $timeslot->promotions()->attach($promotions->unique()->map(fn($promotion) => $promotion->id));
             $timeslot->learners()->attach($learners);
         });
     }
