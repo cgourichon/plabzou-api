@@ -4,6 +4,7 @@ namespace App\Services\User;
 
 use App\Models\User;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 
 class UserService
 {
@@ -61,6 +62,18 @@ class UserService
         $user->fill(self::formatUserData($data));
         self::fillUser($user, $data);
         $user->save();
+
+        return $user;
+    }
+
+    public static function updateCurrentUSer(array $data): User
+    {
+        $user = Auth::user();
+
+        if (array_key_exists('password', $data))
+            $data['password'] = bcrypt($data['password']);
+
+        $user->update($data);
 
         return $user;
     }
