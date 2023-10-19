@@ -7,49 +7,48 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * Class LearnerPromotion
+ * Class PromotionTimeslot
  *
  * @property int $id
- * @property int $learner_id
  * @property int $promotion_id
+ * @property int $timeslot_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property string|null $deleted_at
  *
- * @property Learner $learner
  * @property Promotion $promotion
+ * @property Timeslot $timeslot
  *
  * @package App\Models
  */
-class LearnerPromotion extends Model
+class PromotionTimeslot extends Model
 {
-    use SoftDeletes, HasFactory;
+    use SoftDeletes;
 
-    protected $table = 'learner_promotion';
+    protected $table = 'promotion_timeslot';
 
     protected $casts = [
-        'learner_id' => 'int',
-        'promotion_id' => 'int'
+        'promotion_id' => 'int',
+        'timeslot_id' => 'int'
     ];
 
     protected $fillable = [
-        'learner_id',
-        'promotion_id'
+        'promotion_id',
+        'timeslot_id'
     ];
-
-    public function learner(): BelongsTo
-    {
-        return $this->belongsTo(Learner::class);
-    }
 
     public function promotion(): BelongsTo
     {
         return $this->belongsTo(Promotion::class);
+    }
+
+    public function timeslot(): BelongsTo
+    {
+        return $this->belongsTo(Timeslot::class);
     }
 }

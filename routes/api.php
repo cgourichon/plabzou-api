@@ -39,6 +39,7 @@ Route::middleware('auth:sanctum')->group(static function () {
     Route::apiResource('users', UserController::class);
     Route::apiResource('promotions', PromotionController::class);
     Route::apiResource('messages', MessageController::class);
+    Route::apiResource('conversations', ConversationController::class);
     Route::get('statuses', [StatusController::class, 'index']);
     Route::get('modes', [ModeController::class, 'index']);
     Route::apiResource('categories', CategoryController::class);

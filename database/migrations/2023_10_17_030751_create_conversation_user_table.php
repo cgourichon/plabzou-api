@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('conversation_user', function (Blueprint $table) {
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('conversation_id')->constrained('conversations');
+            $table->softDeletes();
         });
     }
 
