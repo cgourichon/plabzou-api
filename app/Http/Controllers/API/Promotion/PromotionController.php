@@ -7,12 +7,13 @@ use App\Http\Requests\API\Promotion\PromotionRequest;
 use App\Models\Promotion;
 use App\Services\Promotion\PromotionService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class PromotionController extends BaseController
 {
-    public function index()
+    public function index(Request $request)
     {
-        $promotions = PromotionService::getPromotions();
+        $promotions = PromotionService::getPromotions($request->all());
 
         return $this->success($promotions->toArray(), 'Promotions récupérées avec succès.');
     }

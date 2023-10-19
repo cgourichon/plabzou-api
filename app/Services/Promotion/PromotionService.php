@@ -7,17 +7,25 @@ use App\Models\Course;
 use App\Models\Promotion;
 use App\Services\City\CityService;
 use App\Services\Course\CourseService;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class PromotionService
 {
-    public static function getPromotions(): Collection
+    public static function getPromotions(array $parameters): Collection
     {
-        return Promotion::with(['course', 'learners', 'city'])
+        $query = Promotion::with(['course', 'learners', 'city'])
             ->orderByDesc('starts_at')
-            ->orderByDesc('ends_at')
-            ->get();
+            ->orderByDesc('ends_at');
+
+        if (array_key_exists('training', $parameters)) {
+            $query->whereHas('course.trainings', function (Builder $query) use ($parameters) {
+                $query->where('training_id', $parameters['training']);
+            });
+        }
+
+        return $query->get();
     }
 
     /**
