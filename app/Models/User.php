@@ -29,8 +29,10 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string|null $remember_token
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property string|null $deleted_at
  *
  * @property AdministrativeEmployee $administrative_employee
+ * @property Collection|Conversation[] $conversations
  * @property Learner $learner
  * @property Collection|Message[] $messages
  * @property Teacher $teacher
@@ -39,7 +41,7 @@ use Laravel\Sanctum\HasApiTokens;
  */
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, SoftDeletes;
+    use SoftDeletes, HasFactory, HasApiTokens;
 
     protected $table = 'users';
 
@@ -62,11 +64,20 @@ class User extends Authenticatable
         'remember_token'
     ];
 
-    protected $appends = ['full_name', 'user_id'];
-
     public function administrativeEmployee(): HasOne
     {
         return $this->hasOne(AdministrativeEmployee::class);
+    }
+
+    public function conversations(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Conversation::class,
+            'conversation_user',
+            'user_id',
+            'conversation_id'
+        )
+            ->withPivot('deleted_at');
     }
 
     public function learner(): HasOne
@@ -74,23 +85,13 @@ class User extends Authenticatable
         return $this->hasOne(Learner::class);
     }
 
+    public function messages(): HasMany
+    {
+        return $this->hasMany(Message::class, 'sender_id');
+    }
+
     public function teacher(): HasOne
     {
         return $this->hasOne(Teacher::class);
-    }
-
-    public function conversations(): BelongsToMany
-    {
-        return $this->belongsToMany(Conversation::class)->orderBy('created_at', 'desc');
-    }
-
-    public function getFullNameAttribute(): string
-    {
-        return "{$this->first_name} {$this->last_name}";
-    }
-
-    public function getUserIdAttribute(): int
-    {
-        return $this->id;
     }
 }

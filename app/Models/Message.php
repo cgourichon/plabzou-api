@@ -17,11 +17,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *
  * @property int $id
  * @property int $sender_id
- * @property int $recipient_id
+ * @property int $conversation_id
  * @property string $message
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property string|null $deleted_at
  *
+ * @property Conversation $conversation
  * @property User $user
  *
  * @package App\Models
@@ -32,19 +34,24 @@ class Message extends Model
 
     protected $table = 'messages';
 
+    protected $casts = [
+        'sender_id' => 'int',
+        'conversation_id' => 'int'
+    ];
+
     protected $fillable = [
         'sender_id',
         'conversation_id',
         'message'
     ];
 
-    public function sender(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
     public function conversation(): BelongsTo
     {
-        return $this->belongsTo(Conversation::class, 'conversation_id', 'id');
+        return $this->belongsTo(Conversation::class);
+    }
+
+    public function sender(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'sender_id');
     }
 }

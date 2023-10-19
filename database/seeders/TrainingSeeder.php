@@ -17,8 +17,8 @@ class TrainingSeeder extends Seeder
     {
         Training::factory()->count(20)->create()->each(function (Training $training) {
             $training->teachers()->attach(Teacher::inRandomOrder()->limit(rand(1, 5))->get());
-            //$training->courses()->attach(Course::inRandomOrder()->limit(rand(1, 3))->get());
-            //$training->categories()->attach(Category::inRandomOrder()->limit(rand(1, 3))->get());
+            $training->courses()->attach(Course::inRandomOrder()->limit(rand(1, 3))->get());
+            $training->categories()->attach(Category::inRandomOrder()->limit(rand(1, 3))->get());
         });
     }
 }

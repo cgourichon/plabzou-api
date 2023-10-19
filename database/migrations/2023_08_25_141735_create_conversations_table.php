@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('conversations', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();
+            $table->foreignId('teacher_id')->constrained('teachers', 'user_id');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

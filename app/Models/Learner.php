@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $mode_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property string|null $deleted_at
  *
  * @property Mode $mode
  * @property User $user
@@ -31,7 +32,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Learner extends Model
 {
-    use HasFactory, SoftDeletes;
+    use SoftDeletes, HasFactory;
 
     public $incrementing = false;
     protected $table = 'learners';
@@ -44,8 +45,6 @@ class Learner extends Model
     protected $fillable = [
         'mode_id'
     ];
-
-    protected $appends = ['full_name'];
 
     public function mode(): BelongsTo
     {
@@ -63,11 +62,9 @@ class Learner extends Model
             Promotion::class,
             'learner_promotion',
             'learner_id',
-            'promotion_id',
-            'user_id',
-            'id'
+            'promotion_id'
         )
-            ->withPivot('id')
+            ->withPivot('id', 'deleted_at')
             ->withTimestamps();
     }
 
@@ -77,16 +74,9 @@ class Learner extends Model
             Timeslot::class,
             'learner_timeslot',
             'learner_id',
-            'timeslot_id',
-            'user_id',
-            'id'
+            'timeslot_id'
         )
-            ->withPivot('id')
+            ->withPivot('id', 'deleted_at')
             ->withTimestamps();
-    }
-
-    public function getFullNameAttribute(): string
-    {
-        return $this->user->full_name;
     }
 }

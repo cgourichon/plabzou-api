@@ -7,9 +7,10 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Class TeacherTraining
@@ -17,11 +18,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $id
  * @property int $teacher_id
  * @property int $training_id
- * @property Carbon $latest_upgrade_date
+ * @property Carbon|null $latest_upgrade_date
  * @property bool $is_active
  * @property string|null $reason
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property string|null $deleted_at
  *
  * @property Teacher $teacher
  * @property Training $training
@@ -30,7 +32,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class TeacherTraining extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, HasFactory;
 
     protected $table = 'teacher_training';
 

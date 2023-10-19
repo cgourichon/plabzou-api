@@ -22,8 +22,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $status
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property string|null $deleted_at
  *
  * @property User $user
+ * @property Collection|Conversation[] $conversations
  * @property Collection|Request[] $requests
  * @property Collection|Timeslot[] $timeslots
  * @property Collection|Training[] $trainings
@@ -32,7 +34,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Teacher extends Model
 {
-    use HasFactory, SoftDeletes;
+    use SoftDeletes, HasFactory;
 
     public $incrementing = false;
     protected $table = 'teachers';
@@ -45,11 +47,14 @@ class Teacher extends Model
         'status'
     ];
 
-    protected $appends = ['full_name'];
-
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function conversations(): HasMany
+    {
+        return $this->hasMany(Conversation::class);
     }
 
     public function requests(): HasMany
@@ -63,11 +68,9 @@ class Teacher extends Model
             Timeslot::class,
             'teacher_timeslot',
             'teacher_id',
-            'timeslot_id',
-            'user_id',
-            'id'
+            'timeslot_id'
         )
-            ->withPivot('id')
+            ->withPivot('id', 'deleted_at')
             ->withTimestamps();
     }
 
@@ -77,16 +80,9 @@ class Teacher extends Model
             Training::class,
             'teacher_training',
             'teacher_id',
-            'training_id',
-            'user_id',
-            'id'
+            'training_id'
         )
-            ->withPivot('id', 'latest_upgrade_date', 'is_active', 'reason')
+            ->withPivot('id', 'latest_upgrade_date', 'is_active', 'reason', 'deleted_at')
             ->withTimestamps();
-    }
-
-    public function getFullNameAttribute(): string
-    {
-        return $this->user->full_name;
     }
 }
