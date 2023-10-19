@@ -81,13 +81,6 @@ class Timeslot extends Model
             ->withTimestamps();
     }
 
-    public function promotions(): BelongsToMany
-    {
-        return $this->belongsToMany(Promotion::class, 'promotion_timeslot', 'timeslot_id', 'promotion_id')
-            ->withPivot('id')
-            ->withTimestamps();
-    }
-
     public function requests(): HasMany
     {
         return $this->hasMany(Request::class);
