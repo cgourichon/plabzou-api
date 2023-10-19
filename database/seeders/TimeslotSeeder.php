@@ -25,12 +25,6 @@ class TimeslotSeeder extends Seeder {
                     $query->where('training_id', $timeslot->training_id);
                 })->inRandomOrder()->limit(rand(1, 5))->get();
 
-            $promotions = collect();
-            foreach ($learners as $learner) {
-                $promotions->push($learner->promotions->first());
-            }
-
-            $timeslot->promotions()->attach($promotions->unique()->map(fn($promotion) => $promotion->id));
             $timeslot->learners()->attach($learners);
         });
     }
