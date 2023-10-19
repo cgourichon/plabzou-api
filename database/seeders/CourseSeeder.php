@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\Course;
+use App\Models\Learner;
+use App\Models\Training;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,10 +15,6 @@ class CourseSeeder extends Seeder
      */
     public function run(): void
     {
-        Course::insert([
-            ['name' => 'D2WM', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'CDA', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'MS2D', 'created_at' => now(), 'updated_at' => now()],
-        ]);
+        Course::factory()->count(5)->create();
     }
 }

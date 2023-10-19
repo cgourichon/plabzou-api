@@ -60,14 +60,14 @@ class Training extends Model
 
     public function categories(): BelongsToMany
     {
-        return $this->belongsToMany(Category::class, 'training_category')
+        return $this->belongsToMany(Category::class, 'training_category', 'category_id', 'training_id')
             ->withPivot('id')
             ->withTimestamps();
     }
 
     public function courses(): BelongsToMany
     {
-        return $this->belongsToMany(Course::class, 'training_course')
+        return $this->belongsToMany(Course::class, 'training_course', 'course_id', 'training_id')
             ->withPivot('id')
             ->withTimestamps();
     }

@@ -29,6 +29,8 @@ class CourseRequest extends FormRequest
                 'string',
                 Rule::unique('courses', 'name')->ignore($this->course?->id),
             ],
+            'trainings' => ['required', 'array'],
+            'trainings.*.id' => ['required', 'exists:trainings,id'],
         ];
     }
 
@@ -43,6 +45,10 @@ class CourseRequest extends FormRequest
             'name.required' => 'Le nom est obligatoire.',
             'name.string' => 'Le nom doit être une chaîne de caractères.',
             'name.unique' => 'Le nom est déjà utilisé.',
+            'trainings.required' => 'Les formations sont obligatoires.',
+            'trainings.array' => 'Les formations doivent être un tableau.',
+            'trainings.*.id.required' => 'La formation est obligatoire.',
+            'trainings.*.id.exists' => 'La formation n\'existe pas.',
         ];
     }
 }

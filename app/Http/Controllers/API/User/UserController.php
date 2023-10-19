@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\User;
 
 use App\Http\Controllers\API\BaseController;
+use App\Http\Requests\API\User\CurrentUserRequest;
 use App\Http\Requests\API\User\UserRequest;
 use App\Models\User;
 use App\Services\User\UserService;
@@ -38,6 +39,15 @@ class UserController extends BaseController
 
         return $this->success($user->toArray(), 'Utilisateur mis à jour avec succès.');
     }
+
+    public function updateCurrent(CurrentUserRequest $request)
+    {
+        return $this->success(
+            UserService::updateCurrentUSer($request->only('phone_number', 'password'))->toArray(),
+            'Profil mis à jour avec succès.'
+        );
+    }
+
 
     public function destroy(User $user)
     {

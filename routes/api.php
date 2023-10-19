@@ -38,6 +38,7 @@ Route::prefix('auth')->group(static function () {
 });
 
 Route::middleware('auth:sanctum')->group(static function () {
+    Route::patch('/users/me', [UserController::class, 'updateCurrent']);
     Route::apiResource('users', UserController::class);
     Route::apiResource('promotions', PromotionController::class);
     Route::apiResource('messages', MessageController::class);
