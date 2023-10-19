@@ -27,6 +27,9 @@ class TimeslotService
             $timeslot->learners()->attach(collect($data['learners'])->pluck('user_id'));
             $timeslot->teachers()->attach(collect($data['teachers'])->pluck('user_id'));
 
+            if (array_key_exists('promotions', $data))
+                $timeslot->promotions()->attach(collect($data['promotions'])->pluck('id'));
+
             DB::commit();
 
             return $timeslot;
@@ -47,6 +50,7 @@ class TimeslotService
             $timeslot->update(self::formatTimeslotData($data));
             $timeslot->learners()->sync(collect($data['learners'])->pluck('user_id'));
             $timeslot->teachers()->sync(collect($data['teachers'])->pluck('user_id'));
+            $timeslot->promotions()->sync(collect($data['promotions'])->pluck('id'));
 
             DB::commit();
 
