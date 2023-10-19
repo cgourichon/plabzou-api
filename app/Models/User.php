@@ -64,6 +64,8 @@ class User extends Authenticatable
         'remember_token'
     ];
 
+    protected $appends = ['full_name', 'user_id'];
+
     public function administrativeEmployee(): HasOne
     {
         return $this->hasOne(AdministrativeEmployee::class);
@@ -93,5 +95,15 @@ class User extends Authenticatable
     public function teacher(): HasOne
     {
         return $this->hasOne(Teacher::class);
+    }
+
+    public function getFullNameAttribute(): string
+    {
+        return "{$this->first_name} {$this->last_name}";
+    }
+
+    public function getUserIdAttribute(): int
+    {
+        return $this->id;
     }
 }
