@@ -61,7 +61,7 @@ class RequestController extends BaseController
      * @param Request $request
      * @return JsonResponse
      */
-    public function delete(Request $request): JsonResponse
+    public function destroy(Request $request): JsonResponse
     {
         RequestService::deleteRequest($request);
         return $this->success([], 'La demande a bien été annulée');
