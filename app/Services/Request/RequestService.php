@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Services\Request;
 
 use App\Models\Request;
@@ -7,6 +6,8 @@ use App\Models\Timeslot;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
+use InvalidArgumentException;
 
 class RequestService
 {
@@ -64,6 +65,11 @@ class RequestService
      */
     public static function updateRequest(Request $request, array $validated): Request
     {
+
+        if (is_null($validated['is_approved_by_teacher']) && !is_null($validated['is_approved_by_admin'])) {
+            throw new InvalidArgumentException("Vous ne pouvez pas valider/rejetter cette demande tant que le formateur n'y a pas répondu");
+        }
+
         $request->update($validated);
         return $request;
     }
@@ -73,9 +79,18 @@ class RequestService
      *
      * @param array $validated
      * @return mixed
+     * @throws ValidationException
      */
     public static function createRequest(array $validated) : Request
     {
+        $existingRequest = Request::where('timeslot_id', '=', $validated['timeslot_id'])
+                                    ->where('teacher_id', '=', $validated['teacher_id'])
+                                    ->first();
+
+        if ($existingRequest) {
+            throw new InvalidArgumentException('Une demande existe déjà sur ce créneau pour ce formateur');
+        }
+
         return Request::create($validated);
     }
 

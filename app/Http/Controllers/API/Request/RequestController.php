@@ -29,7 +29,11 @@ class RequestController extends BaseController
      */
     public function store(RequestRequest $request): JsonResponse
     {
-        $course = RequestService::createRequest($request->validated());
+        try {
+            $course = RequestService::createRequest($request->validated());
+        } catch (\InvalidArgumentException $e) {
+            return $this->error($e->getMessage(), 422);
+        }
         return $this->success($course->toArray(), 'Cursus créé avec succès');
     }
 
@@ -45,13 +49,17 @@ class RequestController extends BaseController
     /**
      * Met à jour la requête
      *
-     * @param RequestRequest $request
+     * @param RequestRequest $requestRequest
      * @param Request $request
      * @return JsonResponse
      */
     public function update(RequestRequest $requestRequest, Request $request): JsonResponse
     {
-        $request = RequestService::updateRequest($request, $requestRequest->validated());
+        try {
+            $request = RequestService::updateRequest($request, $requestRequest->validated());
+        } catch (\InvalidArgumentException $e) {
+            return $this->error($e->getMessage(), 422);
+        }
         return $this->success($request->toArray(), 'La demande a bien été mise à jour');
     }
 
