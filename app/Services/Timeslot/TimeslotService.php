@@ -2,8 +2,11 @@
 
 namespace App\Services\Timeslot;
 
+use App\Models\Learner;
 use App\Models\Timeslot;
+use App\Models\Training;
 use Exception;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
@@ -119,6 +122,43 @@ class TimeslotService
     }
 
     /**
+     * Vérifier la durée totale de la formation pour les apprenants
+     *
+     * @param Timeslot|null $timeslot
+     * @param Training $training
+     * @param array $data
+     * @return bool
+     */
+    private static function checkLearnersDuration(?Timeslot $timeslot, Training $training, array $data): bool
+    {
+        // Récupérer la durée totale de la formation (en minutes)
+        $trainingDuration = $training->duration;
+        // Récupérer la durée du créneau à créer (en minutes)
+        $timeslotToCreateDuration = Carbon::parse($data['ends_at'])->diffInMinutes(Carbon::parse($data['starts_at']));
+
+        // Pour chaque apprenant
+        // Récupérer les créneaux de la formation
+        // Et vérifier si la durée totale de la formation est dépassée
+        foreach ($data['learners'] as $learner) {
+            $learner = Learner::with('timeslots')->where('user_id', $learner['user_id'])->first();
+
+            $timeslots = $learner->timeslots->where('training_id', $data['training']);
+            $timeslots = $timeslot ? $timeslots->where('id', '!=', $timeslot->id) : $timeslots;
+
+            $timeslotsDuration = $timeslots->sum(function ($timeslot) {
+                return Carbon::parse($timeslot->ends_at)->diffInMinutes(Carbon::parse($timeslot->starts_at));
+            });
+            $totalDuration = $timeslotsDuration + $timeslotToCreateDuration;
+
+            if ($totalDuration > $trainingDuration) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Vérifier la disponibilité d'un créneau
      *
      * @param array $data
@@ -137,7 +177,7 @@ class TimeslotService
 
         // Vérifier si le créneau est disponible et renvoyer une exception si ce n'est pas le cas
 
-        if (isset($data['room']) && !self::checkRoomAvailabilityForTimeslots($timeslotsSamePeriod, $data['room'])) {
+        if (!self::checkRoomAvailabilityForTimeslots($timeslotsSamePeriod, $data['room'])) {
             throw new InvalidArgumentException('Le créneau est déjà pris sur cette salle.');
         }
 
@@ -147,6 +187,10 @@ class TimeslotService
 
         if (!self::checkUsersAvailabilityForTimeslots($timeslotsSamePeriod, $data['teachers'], 'teachers')) {
             throw new InvalidArgumentException('Le créneau est déjà pris pour un ou plusieurs formateurs.');
+        }
+
+        if (!self::checkLearnersDuration($timeslot, Training::find($data['training']), $data)) {
+            throw new InvalidArgumentException('La durée totale de la formation est dépassée pour un ou plusieurs apprenants.');
         }
     }
 }
