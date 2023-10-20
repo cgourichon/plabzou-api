@@ -44,6 +44,8 @@ class Building extends Model
         'place_id'
     ];
 
+    protected $with = ['place'];
+
     public function place(): BelongsTo
     {
         return $this->belongsTo(Place::class);

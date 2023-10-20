@@ -65,7 +65,7 @@ class Timeslot extends Model
 
     public function room(): BelongsTo
     {
-        return $this->belongsTo(Room::class);
+        return $this->belongsTo(Room::class)->withDefault();
     }
 
     public function training(): BelongsTo
