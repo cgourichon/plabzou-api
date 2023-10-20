@@ -19,13 +19,15 @@ class RequestFactory extends Factory
      */
     public function definition(): array
     {
+        $choices = collect([true, false, null]);
+
         return [
             'teacher_id' => Teacher::all()->random()->user_id,
             'administrative_employee_id' => AdministrativeEmployee::all()->random()->user_id,
             'timeslot_id' => Timeslot::all()->random()->id,
             'comment' => $this->faker->sentence,
-            'is_approved_by_admin' => $this->faker->boolean,
-            'is_approved_by_teacher' => $this->faker->boolean,
+            'is_approved_by_admin' => $choices->random(),
+            'is_approved_by_teacher' => $choices->random(),
         ];
     }
 }
