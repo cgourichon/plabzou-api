@@ -7,6 +7,7 @@ use App\Models\Course;
 use App\Models\Promotion;
 use App\Services\City\CityService;
 use App\Services\Course\CourseService;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -25,8 +26,20 @@ class PromotionService
             });
         }
 
-        return $query->get();
+        // eager load pour optimiser
+        if (array_key_exists('advancement', $parameters) && $parameters['advancement']) {
+            $query->with(['course.trainings', 'timeslots']);
+        }
+
+        $promotions = $query->get();
+
+        if (array_key_exists('advancement', $parameters) && $parameters['advancement']) {
+            foreach ($promotions as $promotion) self::calculatePromotionAdvancement($promotion);
+        }
+
+        return $promotions;
     }
+
 
     /**
      * @throws \Exception
@@ -115,5 +128,48 @@ class PromotionService
         if($data['city']) $formattedData['city_id'] = $data['city'];
 
         return $formattedData;
+    }
+
+    public static function calculatePromotionAdvancement(Promotion $promotion) {
+        // clone pour éviter d'avoir un problème de réutilisation des trainings quand la méthode est appelé dans un foreach
+        $course = clone $promotion->course;
+        $course->trainings = collect();
+        foreach ($promotion->course->trainings as $training) $course->trainings->push(clone $training);
+        $promotion->course = $course;
+
+        // sur chaque formation du cursus, on va regarder les créneaux qui correspondent et ajouter le temps passé dessus à la formation
+        foreach($promotion->timeslots as $timeslot) {
+            // on regarde que les créneaux qui correspondent à une formation du cursus
+            $training = $promotion->course->trainings->first(fn($t) => $t->id === $timeslot->training_id);
+
+            if ($training) {
+                $start = Carbon::parse($timeslot->starts_at);
+                $end = Carbon::parse($timeslot->ends_at);
+                $diffInMinutes = $end->diffInMinutes($start);
+
+                $training->advancement = $training->advancement ? $training->advancement+$diffInMinutes : $diffInMinutes;
+            }
+        }
+
+        // calcul de l'avancement global de la promotion dans le cursus et du pourcentage d'avancement pour chaque formation
+        $courseDuration = 0;
+        $promotionAdvancement = 0;
+        foreach ($promotion->course->trainings as $training) {
+            $courseDuration += $training->duration;
+
+            $training->percentage = round(($training->advancement / $training->duration) * 100);
+            if ($training->percentage >= 100) {
+                $promotionAdvancement += $training->duration;
+                $training->percentage = 100;
+            } else {
+                $promotionAdvancement += $training->advancement;
+                $training->remaining = $training->duration - $training->advancement;
+            }
+        }
+
+        $promotion->remaining = $courseDuration -  $promotionAdvancement;
+        $promotion->duration = $courseDuration;
+        $promotion->trainings = $promotion->course->trainings;
+        $promotion->percentage = round(($promotionAdvancement / $courseDuration) * 100);
     }
 }
