@@ -63,13 +63,16 @@ class TimeslotService
 
     private static function formatTimeslotData(array $data): array
     {
-        return [
+        $formattedData = [
             'training_id' => $data['training'],
-            'room_id' => $data['room'],
             'starts_at' => $data['starts_at'],
             'ends_at' => $data['ends_at'],
             'is_validated' => (bool)$data['is_validated'],
         ];
+
+        if(isset($data['room'])) $formattedData['room_id'] = $data['room'];
+
+        return $formattedData;
     }
 
     /**
@@ -134,7 +137,7 @@ class TimeslotService
 
         // Vérifier si le créneau est disponible et renvoyer une exception si ce n'est pas le cas
 
-        if (!self::checkRoomAvailabilityForTimeslots($timeslotsSamePeriod, $data['room'])) {
+        if (isset($data['room']) && !self::checkRoomAvailabilityForTimeslots($timeslotsSamePeriod, $data['room'])) {
             throw new InvalidArgumentException('Le créneau est déjà pris sur cette salle.');
         }
 

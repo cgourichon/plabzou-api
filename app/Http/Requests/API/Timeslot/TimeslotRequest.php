@@ -24,7 +24,7 @@ class TimeslotRequest extends FormRequest
     {
         return [
             'training' => ['required', 'integer', 'exists:trainings,id'],
-            'room' => ['required', 'integer', 'exists:rooms,id'],
+            'room' => ['nullable', 'integer', 'exists:rooms,id'],
             'starts_at' => ['required', 'date'],
             'ends_at' => ['required', 'date'],
             'is_validated' => ['nullable', 'boolean'],
@@ -48,7 +48,6 @@ class TimeslotRequest extends FormRequest
             'training.required' => 'La formation est obligatoire.',
             'training.integer' => 'La formation doit être un entier.',
             'training.exists' => 'La formation n\'existe pas.',
-            'room.required' => 'La salle est obligatoire.',
             'room.integer' => 'La salle doit être un entier.',
             'room.exists' => 'La salle n\'existe pas.',
             'starts_at.required' => 'La date de début est obligatoire.',
