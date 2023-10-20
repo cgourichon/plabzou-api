@@ -57,7 +57,6 @@ class AuthController extends BaseController
         $user->load('administrativeEmployee',
                     'learner',
                     'teacher.requests.timeslot.room',
-                    'teacher.requests.timeslot.mode',
                     'teacher.requests.administrativeEmployee',
                     'conversations.messages.sender',
                     'conversations.teacher.user');
