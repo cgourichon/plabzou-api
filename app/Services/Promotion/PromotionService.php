@@ -130,7 +130,7 @@ class PromotionService
         return $formattedData;
     }
 
-    private static function calculatePromotionAdvancement(Promotion $promotion) {
+    public static function calculatePromotionAdvancement(Promotion $promotion) {
         // clone pour éviter d'avoir un problème de réutilisation des trainings quand la méthode est appelé dans un foreach
         $course = clone $promotion->course;
         $course->trainings = collect();

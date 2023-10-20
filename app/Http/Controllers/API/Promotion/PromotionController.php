@@ -28,9 +28,14 @@ class PromotionController extends BaseController
         return $this->success($promotion->toArray(), 'Promotion créée avec succès.');
     }
 
-    public function show(Promotion $promotion): JsonResponse
+    public function show(Promotion $promotion, Request $request ): JsonResponse
     {
         $promotion->load(['course', 'learners']);
+
+        if ($request->advancement) {
+            $promotion->load(['timeslots.training', 'timeslots.teachers', 'timeslots.room', 'timeslots.learners', 'timeslots.promotions']);
+            PromotionService::calculatePromotionAdvancement($promotion);
+        }
 
         return $this->success($promotion->toArray(), 'Promotion récupérée avec succès.');
     }
