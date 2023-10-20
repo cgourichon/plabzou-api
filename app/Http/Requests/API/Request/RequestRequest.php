@@ -22,11 +22,11 @@ class RequestRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'timeslot_id' => 'required|integer',
-            'teacher_id' => 'required|integer',
-            'administrative_employee_id' => 'required|integer',
-            'comment' => 'string|min:2|max:255|nullable',
-            'is_approved_by_admin' => 'boolean|nullable',
+            'timeslot_id' => 'required|integer|sometimes',
+            'teacher_id' => 'required|integer|sometimes',
+            'administrative_employee_id' => 'required|integer|sometimes',
+            'comment' => 'string|min:2|max:255|nullable|sometimes',
+            'is_approved_by_admin' => 'boolean|nullable|required_with:is_approved_by_teacher|sometimes',
             'is_approved_by_teacher' => 'boolean|nullable',
         ];
     }
