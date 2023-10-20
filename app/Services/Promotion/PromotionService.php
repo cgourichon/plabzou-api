@@ -131,12 +131,16 @@ class PromotionService
     }
 
     private static function calculatePromotionAdvancement(Promotion $promotion) {
-        $trainings = $promotion->course->trainings;
+        // clone pour éviter d'avoir un problème de réutilisation des trainings quand la méthode est appelé dans un foreach
+        $course = clone $promotion->course;
+        $course->trainings = collect();
+        foreach ($promotion->course->trainings as $training) $course->trainings->push(clone $training);
+        $promotion->course = $course;
 
         // sur chaque formation du cursus, on va regarder les créneaux qui correspondent et ajouter le temps passé dessus à la formation
         foreach($promotion->timeslots as $timeslot) {
             // on regarde que les créneaux qui correspondent à une formation du cursus
-            $training = $trainings->first(fn($t) => $t->id === $timeslot->training_id);
+            $training = $promotion->course->trainings->first(fn($t) => $t->id === $timeslot->training_id);
 
             if ($training) {
                 $start = Carbon::parse($timeslot->starts_at);
@@ -150,13 +154,22 @@ class PromotionService
         // calcul de l'avancement global de la promotion dans le cursus et du pourcentage d'avancement pour chaque formation
         $courseDuration = 0;
         $promotionAdvancement = 0;
-        foreach ($trainings as $training) {
+        foreach ($promotion->course->trainings as $training) {
             $courseDuration += $training->duration;
-            $promotionAdvancement += $training->advancement;
 
             $training->percentage = round(($training->advancement / $training->duration) * 100);
+            if ($training->percentage >= 100) {
+                $promotionAdvancement += $training->duration;
+                $training->percentage = 100;
+            } else {
+                $promotionAdvancement += $training->advancement;
+                $training->remaining = $training->duration - $training->advancement;
+            }
         }
 
+        $promotion->remaining = $courseDuration -  $promotionAdvancement;
+        $promotion->duration = $courseDuration;
+        $promotion->trainings = $promotion->course->trainings;
         $promotion->percentage = round(($promotionAdvancement / $courseDuration) * 100);
     }
 }
