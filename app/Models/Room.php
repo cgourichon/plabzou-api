@@ -47,6 +47,8 @@ class Room extends Model
         'seats_number'
     ];
 
+    protected $with = ['building'];
+
     public function building(): BelongsTo
     {
         return $this->belongsTo(Building::class);
