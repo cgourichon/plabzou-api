@@ -19,12 +19,12 @@ class TimeslotFactory extends Factory
      */
     public function definition(): array
     {
-        $startDate = $this->faker->dateTimeBetween('now', '+90 days');
+        $startDate = $this->faker->dateTimeBetween('now', '+30 days');
 
         $roundedStartHour = round($startDate->format('H'));
         $startDate->setTime($roundedStartHour, 0);
 
-        $duration = $this->faker->randomElement([10, 30, 60, 90, 120]);
+        $duration = $this->faker->randomElement([10, 30, 60, 90, 120, 180]);
 
         $endDate = clone $startDate;
         $endDate->modify('+' . $duration . ' minutes');

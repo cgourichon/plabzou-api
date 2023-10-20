@@ -32,6 +32,8 @@ class TimeslotRequest extends FormRequest
             'learners.*.user_id' => ['required', 'exists:users,id'],
             'teachers' => ['required', 'array'],
             'teachers.*.user_id' => ['required', 'exists:users,id'],
+            'promotions' => ['nullable', 'array'],
+            'promotions.*.id' => ['required', 'exists:promotions,id'],
         ];
     }
 
@@ -62,6 +64,8 @@ class TimeslotRequest extends FormRequest
             'teachers.array' => 'Les formateurs doivent être un tableau.',
             'teachers.*.user_id.required' => 'Le formateur est obligatoire.',
             'teachers.*.user_id.exists' => 'Le formateur n\'existe pas.',
+            'promotions.array' => 'Les promotions doivent être un tableau.',
+            'promotions.*.user_id.exists' => 'La promotion n\'existe pas.',
         ];
     }
 }

@@ -10,8 +10,8 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Class City
@@ -21,8 +21,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $postcode
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property string|null $deleted_at
  *
  * @property Collection|Place[] $places
+ * @property Collection|Promotion[] $promotions
  *
  * @package App\Models
  */
@@ -40,5 +42,10 @@ class City extends Model
     public function places(): HasMany
     {
         return $this->hasMany(Place::class);
+    }
+
+    public function promotions(): HasMany
+    {
+        return $this->hasMany(Promotion::class);
     }
 }

@@ -13,7 +13,7 @@ class TimeslotService
 {
     public static function getTimeslots(): Collection
     {
-        return Timeslot::with(['room', 'training', 'teachers', 'learners'])->orderBy('starts_at', 'desc')->get();
+        return Timeslot::with(['room', 'training', 'teachers', 'learners', 'promotions'])->orderBy('starts_at', 'desc')->get();
     }
 
     /**
@@ -28,8 +28,10 @@ class TimeslotService
             $timeslot->learners()->attach(collect($data['learners'])->pluck('user_id'));
             $timeslot->teachers()->attach(collect($data['teachers'])->pluck('user_id'));
 
-            RequestService::createRequests($timeslot);
+            if (array_key_exists('promotions', $data))
+                $timeslot->promotions()->attach(collect($data['promotions'])->pluck('id'));
 
+            RequestService::createRequests($timeslot);
             DB::commit();
 
             return $timeslot;
@@ -50,6 +52,7 @@ class TimeslotService
             $timeslot->update(self::formatTimeslotData($data));
             $timeslot->learners()->sync(collect($data['learners'])->pluck('user_id'));
             $timeslot->teachers()->sync(collect($data['teachers'])->pluck('user_id'));
+            $timeslot->promotions()->sync(collect($data['promotions'])->pluck('id'));
 
             DB::commit();
 

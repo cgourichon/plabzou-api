@@ -26,12 +26,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property bool $is_validated
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property string|null $deleted_at
  *
  * @property Room $room
  * @property Training $training
  * @property Collection|Learner[] $learners
  * @property Collection|Request[] $requests
  * @property Collection|Teacher[] $teachers
+ * @property Collection|Promotion[] $promotions
  *
  * @package App\Models
  */
@@ -73,8 +75,13 @@ class Timeslot extends Model
 
     public function learners(): BelongsToMany
     {
-        return $this->belongsToMany(Learner::class, 'learner_timeslot', 'timeslot_id', 'learner_id')
-            ->withPivot('id')
+        return $this->belongsToMany(
+            Learner::class,
+            'learner_timeslot',
+            'timeslot_id',
+            'learner_id'
+        )
+            ->withPivot('id', 'deleted_at')
             ->withTimestamps();
     }
 
@@ -85,8 +92,25 @@ class Timeslot extends Model
 
     public function teachers(): BelongsToMany
     {
-        return $this->belongsToMany(Teacher::class, 'teacher_timeslot', 'timeslot_id', 'teacher_id')
-            ->withPivot('id')
+        return $this->belongsToMany(
+            Teacher::class,
+            'teacher_timeslot',
+            'timeslot_id',
+            'teacher_id'
+        )
+            ->withPivot('id', 'deleted_at')
+            ->withTimestamps();
+    }
+
+    public function promotions(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Promotion::class,
+            'promotion_timeslot',
+            'timeslot_id',
+            'promotion_id'
+        )
+            ->withPivot('id', 'deleted_at')
             ->withTimestamps();
     }
 

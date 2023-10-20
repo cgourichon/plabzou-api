@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $seats_number
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property string|null $deleted_at
  *
  * @property Building $building
  * @property Collection|Timeslot[] $timeslots

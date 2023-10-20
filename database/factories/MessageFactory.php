@@ -3,12 +3,13 @@
 namespace Database\Factories;
 
 use App\Models\Conversation;
+use App\Models\Message;
 use App\Models\Teacher;
 use App\Services\AdministrativeEmployee\AdministrativeEmployeeService;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
+ * @extends Factory<Message>
  */
 class MessageFactory extends Factory
 {
@@ -21,7 +22,7 @@ class MessageFactory extends Factory
     {
         $teacher = Teacher::inRandomOrder()->first()->user_id;
         $admins = AdministrativeEmployeeService::getAllAdministrativeEmployeeId();
-        $all = $admins->merge($teacher);
+        $all = $admins->merge(collect($teacher));
 
         return [
             'sender_id' => $all->random(),
