@@ -66,13 +66,16 @@ class TimeslotService
 
     private static function formatTimeslotData(array $data): array
     {
-        return [
+        $formattedData = [
             'training_id' => $data['training'],
-            'room_id' => $data['room'],
             'starts_at' => $data['starts_at'],
             'ends_at' => $data['ends_at'],
             'is_validated' => (bool)$data['is_validated'],
         ];
+
+        if(isset($data['room'])) $formattedData['room_id'] = $data['room'];
+
+        return $formattedData;
     }
 
     /**
