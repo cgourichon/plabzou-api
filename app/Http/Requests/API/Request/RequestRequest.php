@@ -3,6 +3,7 @@
 namespace App\Http\Requests\API\Request;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class RequestRequest extends FormRequest
 {
@@ -26,7 +27,7 @@ class RequestRequest extends FormRequest
             'teacher_id' => 'required|integer|sometimes',
             'administrative_employee_id' => 'required|integer|sometimes',
             'comment' => 'string|min:2|max:255|nullable|sometimes',
-            'is_approved_by_admin' => 'boolean|nullable|required_with:is_approved_by_teacher|sometimes',
+            'is_approved_by_admin' => 'boolean|nullable',
             'is_approved_by_teacher' => 'boolean|nullable',
         ];
     }
