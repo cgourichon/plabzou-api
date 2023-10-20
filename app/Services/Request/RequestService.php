@@ -19,11 +19,23 @@ class RequestService
      */
     public static function getRequestsWithRelations(): Collection|array
     {
-        return Request::with('teacher', 'timeslot', 'administrativeEmployee')->withTrashed()->get();
+        return Request::with('teacher', 'timeslot.training', 'administrativeEmployee')->withTrashed()->get();
     }
 
     /**
-     * Permet de créer les demandes à la création du créneau
+     * Permet de retrouver une requête précise avec ses relations
+     *
+     * @param Request $request
+     * @return Request
+     */
+    public static function getRequestWithRelation(Request $request)
+    {
+        $request->load('teacher', 'timeslot.training', 'administrativeEmployee');
+        return $request;
+    }
+
+    /**
+     * Permet de créer les demandes à partir de la création du créneau
      *
      * @param Timeslot $timeslot
      * @return void
@@ -35,13 +47,44 @@ class RequestService
 
         foreach ($teachers as $teacher) {
 
-            dump($teacher, $timeslot->id);
-
             Request::create([
                'teacher_id' => $teacher->user_id,
                'timeslot_id' => $timeslot->id,
                'administrative_employee_id' => Auth::id()
             ]);
         }
+    }
+
+    /**
+     * Permet de mettre à jour une demande
+     *
+     * @param Request $request
+     * @param array $validated
+     * @return Request
+     */
+    public static function updateRequest(Request $request, array $validated): Request
+    {
+        $request->update($validated);
+        return $request;
+    }
+
+    /**
+     * Permet de créer une nouvelle demande
+     *
+     * @param array $validated
+     * @return mixed
+     */
+    public static function createRequest(array $validated) : Request
+    {
+        return Request::create($validated);
+    }
+
+    /**
+     * @param Request $request
+     * @return void
+     */
+    public static function deleteRequest(Request $request): void
+    {
+        $request->delete();
     }
 }
