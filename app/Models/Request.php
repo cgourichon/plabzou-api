@@ -47,18 +47,19 @@ class Request extends Model
         'administrative_employee_id',
         'teacher_id',
         'timeslot_id',
-        'is_approved',
+        'is_approved_by_admin',
+        'is_approved_by_teacher',
         'comment'
     ];
 
     public function administrativeEmployee(): BelongsTo
     {
-        return $this->belongsTo(AdministrativeEmployee::class);
+        return $this->belongsTo(AdministrativeEmployee::class, 'administrative_employee_id', 'user_id');
     }
 
     public function teacher(): BelongsTo
     {
-        return $this->belongsTo(Teacher::class);
+        return $this->belongsTo(Teacher::class, 'teacher_id', 'user_id');
     }
 
     public function timeslot(): BelongsTo

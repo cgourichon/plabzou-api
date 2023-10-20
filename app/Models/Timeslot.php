@@ -57,6 +57,10 @@ class Timeslot extends Model
         'is_validated'
     ];
 
+    protected $appends = [
+        'name'
+    ];
+
     public function room(): BelongsTo
     {
         return $this->belongsTo(Room::class);
@@ -84,5 +88,10 @@ class Timeslot extends Model
         return $this->belongsToMany(Teacher::class, 'teacher_timeslot', 'timeslot_id', 'teacher_id')
             ->withPivot('id')
             ->withTimestamps();
+    }
+
+    public function getNameAttribute(): string
+    {
+        return strtoupper($this->training->name) . ' du ' . Carbon::create($this->starts_at)->format('d/m/y H:i') . ' au ' . Carbon::create($this->ends_at)->format('d/m/y H:i');
     }
 }
