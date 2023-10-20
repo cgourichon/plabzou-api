@@ -177,7 +177,7 @@ class TimeslotService
 
         // Vérifier si le créneau est disponible et renvoyer une exception si ce n'est pas le cas
 
-        if (!self::checkRoomAvailabilityForTimeslots($timeslotsSamePeriod, $data['room'])) {
+        if (isset($data['room']) && !self::checkRoomAvailabilityForTimeslots($timeslotsSamePeriod, $data['room'])) {
             throw new InvalidArgumentException('Le créneau est déjà pris sur cette salle.');
         }
 
