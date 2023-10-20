@@ -28,7 +28,6 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-Route::apiResource('requests', RequestController::class);
 
 
 Route::prefix('auth')->group(static function () {
@@ -48,6 +47,7 @@ Route::middleware('auth:sanctum')->group(static function () {
     Route::apiResource('courses', CourseController::class);
     Route::apiResource('trainings', TrainingController::class);
     Route::apiResource('timeslots', TimeslotController::class);
+    Route::apiResource('requests', RequestController::class)->withTrashed();
     Route::get('/rooms', [RoomController::class, 'index']);
     Route::get('/learners', [LearnerController::class, 'index']);
     Route::get('/teachers', [TeacherController::class, 'index']);
