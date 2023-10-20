@@ -21,7 +21,6 @@ class TimeslotController extends BaseController
     public function store(TimeslotRequest $request)
     {
         $validatedData = $request->validated();
-        //dump($validatedData);
 
         try {
             TimeslotService::checkTimeslotAvailability($validatedData);
