@@ -116,6 +116,9 @@ class Timeslot extends Model
 
     public function getNameAttribute(): string
     {
-        return strtoupper($this->training->name) . ' du ' . Carbon::create($this->starts_at)->format('d/m/y H:i') . ' au ' . Carbon::create($this->ends_at)->format('d/m/y H:i');
+        return strtoupper($this->training->name) . ' du '
+                . Carbon::create($this->starts_at)->format('d/m/y') . ' de '
+                . Carbon::create($this->starts_at)->format('H:i') . ' à '
+                . Carbon::create($this->starts_at)->format('H:i');
     }
 }
