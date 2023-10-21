@@ -43,7 +43,8 @@ class Learner extends Model
     ];
 
     protected $fillable = [
-        'mode_id'
+        'mode_id',
+        'user_id'
     ];
 
     protected $appends = ['full_name'];
