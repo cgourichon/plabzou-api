@@ -170,6 +170,6 @@ class PromotionService
         $promotion->remaining = $courseDuration -  $promotionAdvancement;
         $promotion->duration = $courseDuration;
         $promotion->trainings = $promotion->course->trainings;
-        $promotion->percentage = round(($promotionAdvancement / $courseDuration) * 100);
+        $promotion->percentage = $courseDuration !== 0 ? round(($promotionAdvancement / $courseDuration) * 100) : 0;
     }
 }
