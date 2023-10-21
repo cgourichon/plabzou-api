@@ -39,18 +39,21 @@ class UserService
     private static function fillUser(User $user, array $data): void
     {
         if (isset($data['is_super_admin'])) {
+            $user->administrativeEmployee()?->onlyTrashed()?->restore();
             $user->administrativeEmployee()->updateOrCreate(['user_id' => $user->id], ['is_super_admin' => $data['is_super_admin']]);
         } else {
             $user->administrativeEmployee()->delete();
         }
 
         if (isset($data['teacher_status'])) {
+            $user->teacher()?->onlyTrashed()?->restore();
             $user->teacher()->updateOrCreate(['user_id' => $user->id], ['status' => $data['teacher_status']]);
         } else {
             $user->teacher()->delete();
         }
 
         if (isset($data['learner_mode'])) {
+            $user->learner()?->onlyTrashed()?->restore();
             $user->learner()->updateOrCreate(['user_id' => $user->id], ['mode_id' => $data['learner_mode']]);
         } else {
             $user->learner()->delete();
