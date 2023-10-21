@@ -19,11 +19,11 @@ class LearnerController extends BaseController
     public function show(Learner $learner)
     {
         $learner->load([
-            'timeslots.training.courses.promotions',
+            'timeslots.promotions',
             'timeslots.training.categories',
             'timeslots.learners',
             'timeslots.teachers',
-            'timeslots.room.building.place.city'
+            'timeslots.room'
         ]);
 
         return $this->success($learner->toArray(), 'Apprenant récupéré avec succès.');
