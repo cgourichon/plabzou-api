@@ -46,6 +46,8 @@ class Place extends Model
         'city_id'
     ];
 
+    protected $with = ['city'];
+
     public function city(): BelongsTo
     {
         return $this->belongsTo(City::class);

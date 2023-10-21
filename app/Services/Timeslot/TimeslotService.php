@@ -5,6 +5,7 @@ namespace App\Services\Timeslot;
 use App\Models\Learner;
 use App\Models\Timeslot;
 use App\Models\Training;
+use App\Services\Request\RequestService;
 use Exception;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
@@ -15,7 +16,7 @@ class TimeslotService
 {
     public static function getTimeslots(): Collection
     {
-        return Timeslot::with(['room', 'training', 'teachers', 'learners', 'promotions'])->get();
+        return Timeslot::with(['room', 'training', 'teachers', 'learners', 'promotions'])->orderBy('starts_at', 'desc')->get();
     }
 
     /**
@@ -33,6 +34,7 @@ class TimeslotService
             if (array_key_exists('promotions', $data))
                 $timeslot->promotions()->attach(collect($data['promotions'])->pluck('id'));
 
+            RequestService::createRequests($timeslot);
             DB::commit();
 
             return $timeslot;
@@ -177,7 +179,7 @@ class TimeslotService
 
         // Vérifier si le créneau est disponible et renvoyer une exception si ce n'est pas le cas
 
-        if (!self::checkRoomAvailabilityForTimeslots($timeslotsSamePeriod, $data['room'])) {
+        if (isset($data['room']) && !self::checkRoomAvailabilityForTimeslots($timeslotsSamePeriod, $data['room'])) {
             throw new InvalidArgumentException('Le créneau est déjà pris sur cette salle.');
         }
 

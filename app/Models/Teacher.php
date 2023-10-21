@@ -62,7 +62,7 @@ class Teacher extends Model
 
     public function requests(): HasMany
     {
-        return $this->hasMany(Request::class);
+        return $this->hasMany(Request::class, 'teacher_id', 'user_id')->withTrashed()->orderBy('created_at', 'desc');
     }
 
     public function timeslots(): BelongsToMany

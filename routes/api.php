@@ -10,6 +10,7 @@ use App\Http\Controllers\API\Learner\LearnerController;
 use App\Http\Controllers\API\Message\MessageController;
 use App\Http\Controllers\API\Mode\ModeController;
 use App\Http\Controllers\API\Promotion\PromotionController;
+use App\Http\Controllers\API\Request\RequestController;
 use App\Http\Controllers\API\Room\RoomController;
 use App\Http\Controllers\API\Status\StatusController;
 use App\Http\Controllers\API\Teacher\TeacherController;
@@ -29,6 +30,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
 Route::prefix('auth')->group(static function () {
     Route::post('login', [AuthController::class, 'login']);
     Route::middleware('auth:sanctum')->post('logout', [AuthController::class, 'logout']);
@@ -47,6 +49,7 @@ Route::middleware('auth:sanctum')->group(static function () {
     Route::apiResource('courses', CourseController::class);
     Route::apiResource('trainings', TrainingController::class);
     Route::apiResource('timeslots', TimeslotController::class);
+    Route::apiResource('requests', RequestController::class)->withTrashed();
     Route::get('/rooms', [RoomController::class, 'index']);
     Route::prefix('learners')->controller(LearnerController::class)->group(static function () {
         Route::get('', 'index');
