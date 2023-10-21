@@ -19,6 +19,7 @@ class JsonMiddleware
     {
         $request->headers->set('Access-Control-Allow-Origin', '*');
         $request->headers->set('Accept', 'application/json');
+        $request->headers->set('Content-Type', 'application/json');
 
         return $next($request);
     }
