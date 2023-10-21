@@ -23,10 +23,10 @@ class DatabaseSeeder extends Seeder
             RoomSeeder::class,
             TrainingSeeder::class,
             PromotionSeeder::class,
-            TimeslotSeeder::class,
-            ConversationSeeder::class,
-            MessageSeeder::class,
-            RequestSeeder::class
+            //TimeslotSeeder::class,
+            //ConversationSeeder::class,
+            //MessageSeeder::class,
+            //RequestSeeder::class
         ]);
     }
 }
