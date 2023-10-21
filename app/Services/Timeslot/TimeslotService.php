@@ -5,6 +5,7 @@ namespace App\Services\Timeslot;
 use App\Models\Learner;
 use App\Models\Timeslot;
 use App\Models\Training;
+use App\Services\Request\RequestService;
 use Exception;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
@@ -15,7 +16,7 @@ class TimeslotService
 {
     public static function getTimeslots(): Collection
     {
-        return Timeslot::with(['room', 'training', 'teachers', 'learners', 'promotions'])->get();
+        return Timeslot::with(['room', 'training', 'teachers', 'learners', 'promotions'])->orderBy('starts_at', 'desc')->get();
     }
 
     /**
@@ -33,6 +34,7 @@ class TimeslotService
             if (array_key_exists('promotions', $data))
                 $timeslot->promotions()->attach(collect($data['promotions'])->pluck('id'));
 
+            RequestService::createRequests($timeslot);
             DB::commit();
 
             return $timeslot;

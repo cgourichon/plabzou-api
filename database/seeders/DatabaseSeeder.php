@@ -25,7 +25,8 @@ class DatabaseSeeder extends Seeder
             PromotionSeeder::class,
             TimeslotSeeder::class,
             ConversationSeeder::class,
-            MessageSeeder::class
+            MessageSeeder::class,
+            RequestSeeder::class
         ]);
     }
 }
