@@ -48,7 +48,6 @@ class UserController extends BaseController
         );
     }
 
-
     public function destroy(User $user)
     {
         $user->delete();
