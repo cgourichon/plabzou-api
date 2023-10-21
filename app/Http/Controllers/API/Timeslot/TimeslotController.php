@@ -27,7 +27,7 @@ class TimeslotController extends BaseController
 
             $timeslot = TimeslotService::createTimeslot($validatedData);
 
-            return $this->success($timeslot->toArray(), 'Créneau créé avec succès.');
+            return $this->success($timeslot->toArray(), 'Créneau créé avec succès, demandes envoyées aux formateurs.');
         } catch (InvalidArgumentException $e) {
             return $this->error($e->getMessage(), 400);
         } catch (Exception $e) {
