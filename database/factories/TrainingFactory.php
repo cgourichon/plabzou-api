@@ -19,7 +19,7 @@ class TrainingFactory extends Factory
     {
         return [
             'name' => $this->faker->name,
-            'duration' => $this->faker->randomElement([60, 70, 80, 90, 100, 110, 120]),
+            'duration' => $this->faker->numberBetween(600, 1000),
         ];
     }
 }
