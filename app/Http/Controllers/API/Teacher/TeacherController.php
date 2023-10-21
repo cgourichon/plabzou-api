@@ -19,11 +19,11 @@ class TeacherController extends BaseController
     public function show(Teacher $teacher)
     {
         $teacher->load([
-            'timeslots.training.courses.promotions',
+            'timeslots.promotions',
             'timeslots.training.categories',
             'timeslots.learners',
             'timeslots.teachers',
-            'timeslots.room.building.place.city'
+            'timeslots.room'
         ]);
 
         return $this->success($teacher->toArray(), 'Formateur récupéré avec succès.');

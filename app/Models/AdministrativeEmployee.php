@@ -41,7 +41,8 @@ class AdministrativeEmployee extends Model
     ];
 
     protected $fillable = [
-        'is_super_admin'
+        'is_super_admin',
+        'user_id'
     ];
 
     protected $appends = ['full_name'];
