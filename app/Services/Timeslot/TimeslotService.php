@@ -52,10 +52,15 @@ class TimeslotService
         DB::beginTransaction();
 
         try {
+            $timeslot->load('teachers.requests');
+            $oldTeachers = $timeslot->teachers;
+
             $timeslot->update(self::formatTimeslotData($data));
             $timeslot->learners()->sync(collect($data['learners'])->pluck('user_id'));
             $timeslot->teachers()->sync(collect($data['teachers'])->pluck('user_id'));
             $timeslot->promotions()->sync(collect($data['promotions'])->pluck('id'));
+            $timeslot->load('teachers.requests');
+            RequestService::updateRequestsAfterUpdateTimeslot($oldTeachers, $timeslot->teachers, $timeslot);
 
             DB::commit();
 
