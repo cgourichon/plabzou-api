@@ -34,7 +34,7 @@ class RequestController extends BaseController
         } catch (\InvalidArgumentException $e) {
             return $this->error($e->getMessage(), 422);
         }
-        return $this->success($course->toArray(), 'Cursus créé avec succès');
+        return $this->success($course->toArray(), 'La demande a été créé avec succès');
     }
 
     /**
