@@ -61,6 +61,7 @@ class TimeslotController extends BaseController
 
     public function destroy(Timeslot $timeslot)
     {
+        $timeslot->requests()->delete();
         $timeslot->delete();
 
         return $this->success([], 'Créneau supprimé avec succès.');
