@@ -30,7 +30,7 @@ class PromotionController extends BaseController
 
     public function show(Promotion $promotion, Request $request ): JsonResponse
     {
-        $promotion->load(['course', 'learners']);
+        $promotion->load(['course', 'learners', 'city', 'course']);
 
         if ($request->advancement) {
             $promotion->load(['timeslots.training', 'timeslots.teachers', 'timeslots.room', 'timeslots.learners', 'timeslots.promotions']);
