@@ -4,7 +4,7 @@ pipelines:
   default:
     - step:
         script:
-          - apt-get update && apt-get install -qy git curl libmcrypt-dev default-mysql-client --no-install-recommends php8.1 -y php8.1-cli php8.1-common php8.1-mysql php8.1-zip php8.1-gd php8.1-mbstring php8.1-curl php8.1-xml php8.1-bcmath
+          - apt-get update && apt-get install -qy git curl libmcrypt-dev default-mysql-client --no-install-recommends php -y php-cli php-common php-mysql php-zip php-gd php-mbstring php-curl php-xml php-bcmath
           - yes | pecl install mcrypt-1.0.6
           - docker-php-ext-install pdo_mysql
           - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
