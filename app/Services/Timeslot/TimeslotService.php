@@ -3,6 +3,7 @@
 namespace App\Services\Timeslot;
 
 use App\Models\Learner;
+use App\Models\Room;
 use App\Models\Timeslot;
 use App\Models\Training;
 use App\Services\Request\RequestService;
@@ -10,6 +11,7 @@ use Exception;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 
 class TimeslotService
@@ -103,13 +105,13 @@ class TimeslotService
     /**
      * Vérifier la disponibilité d'une salle pour des créneaux
      *
+     * @param Room $room
      * @param Collection $timeslots
-     * @param int $roomId
      * @return bool
      */
-    private static function checkRoomAvailabilityForTimeslots(Collection $timeslots, int $roomId): bool
+    private static function checkRoomAvailabilityForTimeslots(Room $room, Collection $timeslots): bool
     {
-        return $timeslots->where('room_id', $roomId)->isEmpty();
+        return $timeslots->where('room_id', $room->id)->isEmpty();
     }
 
     /**
@@ -180,12 +182,24 @@ class TimeslotService
         // Vérifier si l'on met à jour un créneau
         if ($timeslot) {
             $timeslotsSamePeriod = $timeslotsSamePeriod->where('id', '!=', $timeslot->id);
+        } else {
+            if(!self::checkAuthorizationToCreate($data['starts_at'])) {
+                throw new InvalidArgumentException("La création du créneau sur une date passée n'est pas autorisée");
+            }
         }
 
         // Vérifier si le créneau est disponible et renvoyer une exception si ce n'est pas le cas
 
-        if (isset($data['room']) && !self::checkRoomAvailabilityForTimeslots($timeslotsSamePeriod, $data['room'])) {
-            throw new InvalidArgumentException('Le créneau est déjà pris sur cette salle.');
+        if (isset($data['room'])){
+            $room = Room::find($data['room']);
+
+            if(!self::checkRoomAvailabilityForTimeslots($room, $timeslotsSamePeriod)) {
+                throw new InvalidArgumentException('La salle est déjà utilisée pour un autre créneau.');
+            }
+
+            if(!self::checkRoomCapacity($room, $data['learners'])) {
+                throw new InvalidArgumentException('La capacité maximale de la salle est dépassée.');
+            }
         }
 
         if (!self::checkUsersAvailabilityForTimeslots($timeslotsSamePeriod, $data['learners'], 'learners')) {
@@ -199,5 +213,28 @@ class TimeslotService
         if (!self::checkLearnersDuration($timeslot, Training::find($data['training']), $data)) {
             throw new InvalidArgumentException('La durée totale de la formation est dépassée pour un ou plusieurs apprenants.');
         }
+    }
+
+    /**
+     * Vérifie qu'il n'y a pas plus d'apprenants que de places disponibles
+     *
+     * @param $room
+     * @param mixed $learners
+     * @return bool
+     */
+    private static function checkRoomCapacity($room, mixed $learners): bool
+    {
+        return count($learners) <= $room->seats_number;
+    }
+
+    /**
+     * Vérifie que le créneau n'est pas ajouté sur une date passée
+     *
+     * @param string $starts_at
+     * @return bool
+     */
+    private static function checkAuthorizationToCreate(string $starts_at): bool
+    {
+        return Carbon::parse($starts_at) >= Carbon::now();
     }
 }
