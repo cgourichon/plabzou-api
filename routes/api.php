@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\Auth\AuthController;
+use App\Http\Controllers\API\Building\BuildingController;
 use App\Http\Controllers\API\Category\CategoryController;
 use App\Http\Controllers\API\City\CityController;
 use App\Http\Controllers\API\Conversation\ConversationController;
@@ -53,6 +54,7 @@ Route::middleware('auth:sanctum')->group(static function () {
     Route::apiResource('requests', RequestController::class)->only('update')->middleware('role:administrativeEmployee,teacher');
     Route::apiResource('cities', CityController::class)->middleware('role:administrativeEmployee');
     Route::apiResource('places', PlaceController::class)->middleware('role:administrativeEmployee');
+    Route::apiResource('buildings', BuildingController::class)->middleware('role:administrativeEmployee');
 
     Route::get('rooms', [RoomController::class, 'index'])->middleware('role:administrativeEmployee');
     Route::get('statuses', [StatusController::class, 'index'])->middleware('role:administrativeEmployee');
