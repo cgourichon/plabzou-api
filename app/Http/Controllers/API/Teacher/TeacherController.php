@@ -24,7 +24,8 @@ class TeacherController extends BaseController
             'timeslots.training.categories',
             'timeslots.learners',
             'timeslots.teachers',
-            'timeslots.room'
+            'timeslots.room',
+            'timeslots.requests',
         );
 
         return $this->success($teacher->toArray(), 'Formateur récupéré avec succès.');
