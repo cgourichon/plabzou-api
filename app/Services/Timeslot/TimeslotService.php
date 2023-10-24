@@ -3,6 +3,7 @@
 namespace App\Services\Timeslot;
 
 use App\Models\Learner;
+use App\Models\Room;
 use App\Models\Timeslot;
 use App\Models\Training;
 use App\Services\Request\RequestService;
@@ -10,16 +11,25 @@ use Exception;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 use InvalidArgumentException;
 
 class TimeslotService
 {
+    /**
+     * Récupération
+     * @return Collection
+     */
     public static function getTimeslots(): Collection
     {
         return Timeslot::with(['room', 'training', 'teachers', 'learners', 'promotions'])->orderBy('starts_at', 'desc')->get();
     }
 
     /**
+     * Enregistrer un nouveau créneau
+     *
+     * @param array $data
+     * @return Timeslot
      * @throws Exception
      */
     public static function createTimeslot(array $data): Timeslot
@@ -28,10 +38,12 @@ class TimeslotService
 
         try {
             $timeslot = Timeslot::create(self::formatTimeslotData($data));
+            // Association des apprenants et des formateurs au créneau
             $timeslot->learners()->attach(collect($data['learners'])->pluck('user_id'));
             $timeslot->teachers()->attach(collect($data['teachers'])->pluck('user_id'));
 
             if (array_key_exists('promotions', $data))
+                // Association des promotions s'il y en a
                 $timeslot->promotions()->attach(collect($data['promotions'])->pluck('id'));
 
             RequestService::createRequests($timeslot);
@@ -45,7 +57,31 @@ class TimeslotService
     }
 
     /**
-     * @throws Exception
+     * Formater les données du créneau
+     *
+     * @param array $data
+     * @return array
+     */
+    private static function formatTimeslotData(array $data): array
+    {
+        $formattedData = [
+            'training_id' => $data['training'],
+            'starts_at' => $data['starts_at'],
+            'ends_at' => $data['ends_at'],
+            'is_validated' => (bool)$data['is_validated'],
+        ];
+
+        if (isset($data['room'])) $formattedData['room_id'] = $data['room'];
+
+        return $formattedData;
+    }
+
+    /**
+     * Mettre à jour les informations d'un créneau
+     * @param Timeslot $timeslot
+     * @param array $data
+     * @return Timeslot
+     * @throws ValidationException
      */
     public static function updateTimeslot(Timeslot $timeslot, array $data): Timeslot
     {
@@ -71,18 +107,52 @@ class TimeslotService
         }
     }
 
-    private static function formatTimeslotData(array $data): array
+    /**
+     * Vérifier la disponibilité d'un créneau
+     *
+     * @param array $data
+     * @param Timeslot|null $timeslot
+     * @return void
+     */
+    public static function checkTimeslotAvailability(array $data, ?Timeslot $timeslot = null): void
     {
-        $formattedData = [
-            'training_id' => $data['training'],
-            'starts_at' => $data['starts_at'],
-            'ends_at' => $data['ends_at'],
-            'is_validated' => (bool)$data['is_validated'],
-        ];
+        // Récupérer les créneaux avec la même période (entre le début et la fin du créneau)
+        $timeslotsSamePeriod = self::getTimeslotsSamePeriod($data['starts_at'], $data['ends_at']);
 
-        if(isset($data['room'])) $formattedData['room_id'] = $data['room'];
+        // Vérifier si l'on met à jour un créneau
+        if ($timeslot) {
+            $timeslotsSamePeriod = $timeslotsSamePeriod->where('id', '!=', $timeslot->id);
+        } else {
+            if (!self::checkAuthorizationToCreate($data['starts_at'])) {
+                throw new InvalidArgumentException("La création du créneau sur une date passée n'est pas autorisée");
+            }
+        }
 
-        return $formattedData;
+        // Vérifier si le créneau est disponible et renvoyer une exception si ce n'est pas le cas
+
+        if (isset($data['room'])) {
+            $room = Room::find($data['room']);
+
+            if (!self::checkRoomAvailabilityForTimeslots($room, $timeslotsSamePeriod)) {
+                throw new InvalidArgumentException('La salle est déjà utilisée pour un autre créneau.');
+            }
+
+            if (!self::checkRoomCapacity($room, $data['learners'])) {
+                throw new InvalidArgumentException('La capacité maximale de la salle est dépassée.');
+            }
+        }
+
+        if (!self::checkUsersAvailabilityForTimeslots($timeslotsSamePeriod, $data['learners'], 'learners')) {
+            throw new InvalidArgumentException('Le créneau est déjà pris pour un ou plusieurs apprenants.');
+        }
+
+        if (!self::checkUsersAvailabilityForTimeslots($timeslotsSamePeriod, $data['teachers'], 'teachers')) {
+            throw new InvalidArgumentException('Le créneau est déjà pris pour un ou plusieurs formateurs.');
+        }
+
+        if (!self::checkLearnersDuration($timeslot, Training::find($data['training']), $data)) {
+            throw new InvalidArgumentException('La durée totale de la formation est dépassée pour un ou plusieurs apprenants.');
+        }
     }
 
     /**
@@ -101,15 +171,38 @@ class TimeslotService
     }
 
     /**
-     * Vérifier la disponibilité d'une salle pour des créneaux
+     * Vérifie que le créneau n'est pas ajouté sur une date passée
      *
-     * @param Collection $timeslots
-     * @param int $roomId
+     * @param string $starts_at
      * @return bool
      */
-    private static function checkRoomAvailabilityForTimeslots(Collection $timeslots, int $roomId): bool
+    private static function checkAuthorizationToCreate(string $starts_at): bool
     {
-        return $timeslots->where('room_id', $roomId)->isEmpty();
+        return Carbon::parse($starts_at) >= Carbon::now();
+    }
+
+    /**
+     * Vérifier la disponibilité d'une salle pour des créneaux
+     *
+     * @param Room $room
+     * @param Collection $timeslots
+     * @return bool
+     */
+    private static function checkRoomAvailabilityForTimeslots(Room $room, Collection $timeslots): bool
+    {
+        return $timeslots->where('room_id', $room->id)->isEmpty();
+    }
+
+    /**
+     * Vérifie qu'il n'y a pas plus d'apprenants que de places disponibles
+     *
+     * @param $room
+     * @param mixed $learners
+     * @return bool
+     */
+    private static function checkRoomCapacity($room, mixed $learners): bool
+    {
+        return count($learners) <= $room->seats_number;
     }
 
     /**
@@ -166,38 +259,14 @@ class TimeslotService
     }
 
     /**
-     * Vérifier la disponibilité d'un créneau
+     * Supprime le créneau et les demandes associées
      *
-     * @param array $data
-     * @param Timeslot|null $timeslot
+     * @param Timeslot $timeslot
      * @return void
      */
-    public static function checkTimeslotAvailability(array $data, ?Timeslot $timeslot = null): void
+    public static function deleteTimeslot(Timeslot $timeslot): void
     {
-        // Récupérer les créneaux avec la même période (entre le début et la fin du créneau)
-        $timeslotsSamePeriod = self::getTimeslotsSamePeriod($data['starts_at'], $data['ends_at']);
-
-        // Vérifier si l'on met à jour un créneau
-        if ($timeslot) {
-            $timeslotsSamePeriod = $timeslotsSamePeriod->where('id', '!=', $timeslot->id);
-        }
-
-        // Vérifier si le créneau est disponible et renvoyer une exception si ce n'est pas le cas
-
-        if (isset($data['room']) && !self::checkRoomAvailabilityForTimeslots($timeslotsSamePeriod, $data['room'])) {
-            throw new InvalidArgumentException('Le créneau est déjà pris sur cette salle.');
-        }
-
-        if (!self::checkUsersAvailabilityForTimeslots($timeslotsSamePeriod, $data['learners'], 'learners')) {
-            throw new InvalidArgumentException('Le créneau est déjà pris pour un ou plusieurs apprenants.');
-        }
-
-        if (!self::checkUsersAvailabilityForTimeslots($timeslotsSamePeriod, $data['teachers'], 'teachers')) {
-            throw new InvalidArgumentException('Le créneau est déjà pris pour un ou plusieurs formateurs.');
-        }
-
-        if (!self::checkLearnersDuration($timeslot, Training::find($data['training']), $data)) {
-            throw new InvalidArgumentException('La durée totale de la formation est dépassée pour un ou plusieurs apprenants.');
-        }
+        $timeslot->requests()->delete();
+        $timeslot->delete();
     }
 }

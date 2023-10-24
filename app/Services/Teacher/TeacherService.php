@@ -8,11 +8,22 @@ use Illuminate\Support\Collection;
 
 class TeacherService
 {
+    /**
+     * Récupérer une liste de statuts que l'on peut associer aux formateurs
+     *
+     * @return array
+     */
     public static function getTeacherStatuses(): array
     {
         return collect(StatusEnum::cases())->pluck('value')->toArray();
     }
 
+    /**
+     * Récupérer une liste de formateurs
+     *
+     * @param array $parameters
+     * @return Collection
+     */
     public static function getTeachers(array $parameters): Collection
     {
         $query = Teacher::query();

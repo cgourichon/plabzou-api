@@ -2,8 +2,6 @@
 
 namespace App\Imports;
 
-use App\Models\City;
-use App\Models\Course;
 use App\Models\Learner;
 use App\Models\Mode;
 use App\Models\Promotion;
@@ -17,7 +15,7 @@ class LearnersImport implements ToCollection, WithHeadingRow
     /**
      * @param Collection $rows
      */
-    public function collection(Collection $rows)
+    public function collection(Collection $rows): void
     {
         foreach ($rows as $row) {
             $user = User::create([
@@ -25,20 +23,16 @@ class LearnersImport implements ToCollection, WithHeadingRow
                 'first_name' => $row['prenom'],
                 'phone_number' => $row['telephone'],
                 'email' => $row['email'],
-                'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+                'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi' // password
             ]);
 
-            $promotion = Promotion::where([
-                'name' => $row['promotion']
-            ])->first();
+            $promotion = Promotion::where(['name' => $row['promotion']])->first();
 
-            $mode = Mode::firstOrCreate([
-                'name' => $row['mode_de_formation']
-            ]);
+            $mode = Mode::firstOrCreate(['name' => $row['mode_de_formation']]);
 
             $learner = Learner::create([
-               'user_id' => $user->id,
-               'mode_id' => $mode->id,
+                'user_id' => $user->id,
+                'mode_id' => $mode->id,
             ]);
 
             $learner->promotions()->attach($promotion->id);

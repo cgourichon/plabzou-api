@@ -11,9 +11,9 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 class TeachersImport implements ToCollection, WithHeadingRow
 {
     /**
-    * @param Collection $collection
-    */
-    public function collection(Collection $rows)
+     * @param Collection $rows
+     */
+    public function collection(Collection $rows): void
     {
         foreach ($rows as $row) {
             $user = User::create([
