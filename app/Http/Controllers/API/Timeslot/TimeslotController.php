@@ -14,7 +14,6 @@ class TimeslotController extends BaseController
     public function index()
     {
         $timeslots = TimeslotService::getTimeslots();
-
         return $this->success($timeslots->toArray(), 'Créneaux récupérés avec succès.');
     }
 
@@ -37,7 +36,7 @@ class TimeslotController extends BaseController
 
     public function show(Timeslot $timeslot)
     {
-        $timeslot->load(['room', 'training', 'teachers', 'learners', 'promotions', 'promotions.learners', 'promotions.course']);
+        $timeslot->load(['room', 'requests', 'training', 'teachers.requests', 'learners', 'promotions.learners', 'promotions.course']);
 
         return $this->success($timeslot->toArray(), 'Créneau récupéré avec succès.');
     }

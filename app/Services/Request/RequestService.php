@@ -70,6 +70,10 @@ class RequestService
             throw new InvalidArgumentException("Vous ne pouvez pas valider/rejetter cette demande tant que le formateur n'y a pas répondu");
         }
 
+        if ($validated['is_approved_by_teacher'] === false && $validated['is_approved_by_admin']) {
+            throw new InvalidArgumentException("Vous ne pouvez pas valider la demande de créneaux, le formateur l'a refusée");
+        }
+
         $request->update($validated);
         return $request;
     }
@@ -102,6 +106,10 @@ class RequestService
 
         if ($existingRequest) {
             throw new InvalidArgumentException('Une demande existe déjà sur ce créneau pour ce formateur');
+        }
+
+        if (isset($validated['is_approved_by_admin'])) {
+            throw new InvalidArgumentException("Vous ne pouvez pas envoyer de réponse avant que le formateur est répondu");
         }
 
         $request = Request::create($validated);
