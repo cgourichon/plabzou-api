@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services\Request;
 
 use App\Models\Request;
@@ -24,18 +25,6 @@ class RequestService
     }
 
     /**
-     * Permet de retrouver une requête précise avec ses relations
-     *
-     * @param Request $request
-     * @return Request
-     */
-    public static function getRequestWithRelation(Request $request)
-    {
-        $request->load('teacher', 'timeslot.training', 'administrativeEmployee');
-        return $request;
-    }
-
-    /**
      * Permet de créer les demandes à partir de la création du créneau
      *
      * @param Timeslot $timeslot
@@ -44,14 +33,14 @@ class RequestService
     public static function createRequests(Timeslot $timeslot): void
     {
         $timeslot->load('teachers');
-        $teachers  = $timeslot->teachers;
+        $teachers = $timeslot->teachers;
 
         foreach ($teachers as $teacher) {
 
             Request::create([
-               'teacher_id' => $teacher->user_id,
-               'timeslot_id' => $timeslot->id,
-               'administrative_employee_id' => Auth::id()
+                'teacher_id' => $teacher->user_id,
+                'timeslot_id' => $timeslot->id,
+                'administrative_employee_id' => Auth::id()
             ]);
         }
     }
@@ -74,6 +63,63 @@ class RequestService
         return $request;
     }
 
+    /**
+     * Supprimer une demande (annulation car suppression partielle)
+     *
+     * @param Request $request
+     * @return void
+     */
+    public static function deleteRequest(Request $request): void
+    {
+        $timeslot = Timeslot::find($request->timeslot_id);
+        $timeslot->teachers()->detach($request->teacher_id);
+        $request->delete();
+    }
+
+    /**
+     * Mettre à jour les demandes suite à une modification du créneau
+     *
+     * @param Collection $oldTeachers
+     * @param Collection $newTeachers
+     * @param Timeslot $timeslot
+     * @return void
+     * @throws ValidationException
+     */
+    public static function updateRequestsAfterUpdateTimeslot(Collection $oldTeachers, Collection $newTeachers, Timeslot $timeslot): void
+    {
+
+        $newTeachersIds = $newTeachers->pluck('user_id');
+        //On suppr les requests pour les formateurs suppr de la liste
+        foreach ($oldTeachers as $oldTeacher) {
+            if (!$newTeachersIds->contains($oldTeacher->user_id)) {
+                $oldTeacher->requests()->where('timeslot_id', $timeslot->id)->first()->delete();
+            }
+        }
+
+        //On créé les nouvelles pour ceux ajoutés
+        foreach ($newTeachers as $newTeacher) {
+            $existingRequest = RequestService::checkIfRequestExists($timeslot->id, $newTeacher->user_id);
+            if ($existingRequest && $existingRequest->deleted_at) {
+                $existingRequest->restore();
+            }
+
+            if (!$existingRequest) {
+                RequestService::createRequest([
+                    'teacher_id' => $newTeacher->user_id,
+                    'administrative_employee_id' => Auth::id(),
+                    'timeslot_id' => $timeslot->id
+                ]);
+            }
+        }
+    }
+
+    /**
+     * Vérifie si la demande existe
+     *
+     * @param int $timeslotId
+     * @param int $teacherId
+     * @return Request
+     */
     public static function checkIfRequestExists(int $timeslotId, int $teacherId)
     {
         return Request::where('timeslot_id', '=', $timeslotId)
@@ -109,53 +155,6 @@ class RequestService
         $timeslot->teachers()->attach($validated['teacher_id']);
 
         return $request;
-    }
-
-    /**
-     * @param Request $request
-     * @return void
-     */
-    public static function deleteRequest(Request $request): void
-    {
-        $timeslot = Timeslot::find($request->timeslot_id);
-        $timeslot->teachers()->detach($request->teacher_id);
-        $request->delete();
-    }
-
-
-    /**
-     * @param Collection $oldTeachers
-     * @param Collection $newTeachers
-     * @param Timeslot $timeslot
-     * @return void
-     * @throws ValidationException
-     */
-    public static function updateRequestsAfterUpdateTimeslot(Collection $oldTeachers, Collection $newTeachers, Timeslot $timeslot): void
-    {
-
-        $newTeachersIds = $newTeachers->pluck('user_id');
-        //On suppr les requests pour les formateurs suppr de la liste
-        foreach ($oldTeachers as $oldTeacher) {
-            if (!$newTeachersIds->contains($oldTeacher->user_id)) {
-                $oldTeacher->requests()->where('timeslot_id', $timeslot->id)->first()->delete();
-            }
-        }
-
-        //On créé les nouvelles pour ceux ajoutés
-        foreach ($newTeachers as $newTeacher) {
-            $existingRequest = RequestService::checkIfRequestExists($timeslot->id, $newTeacher->user_id);
-            if ($existingRequest && $existingRequest->deleted_at) {
-                $existingRequest->restore();
-            }
-
-            if (!$existingRequest) {
-                RequestService::createRequest([
-                    'teacher_id' => $newTeacher->user_id,
-                    'administrative_employee_id' => Auth::id(),
-                    'timeslot_id' => $timeslot->id
-                ]);
-            }
-        }
     }
 
 }

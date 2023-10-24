@@ -3,7 +3,6 @@
 namespace App\Imports;
 
 use App\Models\AdministrativeEmployee;
-use App\Models\Teacher;
 use App\Models\User;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
@@ -22,7 +21,7 @@ class AdministrativeEmployeesImport implements ToCollection, WithHeadingRow
                 'first_name' => $row['prenom'],
                 'phone_number' => $row['telephone'],
                 'email' => $row['email'],
-                'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+                'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi' // password
             ]);
 
             AdministrativeEmployee::create([

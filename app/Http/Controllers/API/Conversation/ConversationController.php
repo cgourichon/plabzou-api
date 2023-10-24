@@ -10,13 +10,10 @@ use Illuminate\Http\JsonResponse;
 class ConversationController extends BaseController
 {
 
-    /**
-     * @param ConversationRequest $request
-     * @return JsonResponse
-     */
     public function store(ConversationRequest $request): JsonResponse
     {
         $conversation = ConversationService::createConversation($request->validated());
-        return $this->success($conversation->toArray(), "La conversation a bien été créée");
+
+        return $this->success($conversation->toArray(), "La conversation a bien été créée.");
     }
 }

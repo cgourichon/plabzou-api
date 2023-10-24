@@ -3,7 +3,6 @@
 namespace App\Services\AdministrativeEmployee;
 
 use App\Models\AdministrativeEmployee;
-use App\Models\Message;
 use Illuminate\Support\Collection;
 
 class AdministrativeEmployeeService
