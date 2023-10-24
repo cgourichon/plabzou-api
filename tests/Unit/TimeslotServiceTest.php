@@ -28,11 +28,11 @@ class TimeslotServiceTest extends TestCase
         $timeslot = Timeslot::factory()->create(['room_id' => $room->id]);
         $timeslots = new Collection([$timeslot]);
         //On crée une autre salle qui sera dispo
-        $roomIdToCheck = Room::factory()->create()->id;
+        $room = Room::factory()->create();
         $service = new TimeslotService();
 
         //Utilisez la réflexion pour appeler la méthode privée.
-        $isAvailable = $this->invokePrivateMethod($service, 'checkRoomAvailabilityForTimeslots', [$timeslots, $roomIdToCheck]);
+        $isAvailable = $this->invokePrivateMethod($service, 'checkRoomAvailabilityForTimeslots', [$room, $timeslots]);
 
         $this->assertTrue($isAvailable);
     }
@@ -45,13 +45,10 @@ class TimeslotServiceTest extends TestCase
 
         $timeslots = new Collection([$timeslot]);
 
-        //Même salle que le créneau -> occupée.
-        $roomIdToCheck = $room->id;
-
         $service = new TimeslotService();
 
         // Utilisez la réflexion pour appeler la méthode privée.
-        $isAvailable = $this->invokePrivateMethod($service, 'checkRoomAvailabilityForTimeslots', [$timeslots, $roomIdToCheck]);
+        $isAvailable = $this->invokePrivateMethod($service, 'checkRoomAvailabilityForTimeslots', [$room, $timeslots]);
 
         $this->assertFalse($isAvailable);
     }
