@@ -23,7 +23,7 @@ class TeacherController extends BaseController
             'timeslots.promotions',
             'timeslots.training.categories',
             'timeslots.learners',
-            'timeslots.teachers',
+            'timeslots.teachers.requests',
             'timeslots.room',
             'timeslots.requests',
         );

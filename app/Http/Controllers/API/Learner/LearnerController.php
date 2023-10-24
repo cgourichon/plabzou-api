@@ -23,8 +23,8 @@ class LearnerController extends BaseController
             'timeslots.promotions',
             'timeslots.training.categories',
             'timeslots.learners',
-            'timeslots.teachers',
-            'timeslots.room'
+            'timeslots.teachers.requests',
+            'timeslots.room',
         );
 
         return $this->success($learner->toArray(), 'Apprenant récupéré avec succès.');
