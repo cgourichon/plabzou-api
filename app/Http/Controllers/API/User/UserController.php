@@ -7,6 +7,8 @@ use App\Http\Requests\API\User\CurrentUserRequest;
 use App\Http\Requests\API\User\UserRequest;
 use App\Models\User;
 use App\Services\User\UserService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends BaseController
 {
@@ -26,29 +28,28 @@ class UserController extends BaseController
 
     public function show(User $user)
     {
-        $user->load(['administrativeEmployee', 'teacher', 'learner.mode']);
+        $user->load('administrativeEmployee', 'teacher', 'learner.mode');
 
         return $this->success($user->toArray(), 'Utilisateur récupéré avec succès.');
     }
 
-    public function update(UserRequest $request, User $user)
+    public function update(UserRequest $request, User $user): JsonResponse
     {
-        $user->load(['administrativeEmployee', 'teacher', 'learner']);
+        $user->load('administrativeEmployee', 'teacher', 'learner');
 
         $user = UserService::updateUser($user, $request->validated());
 
         return $this->success($user->toArray(), 'Utilisateur mis à jour avec succès.');
     }
 
-    public function updateCurrent(CurrentUserRequest $request)
+    public function updateCurrent(CurrentUserRequest $request): JsonResponse
     {
-        return $this->success(
-            UserService::updateCurrentUSer($request->only('phone_number', 'password'))->toArray(),
-            'Profil mis à jour avec succès.'
-        );
+        $user = UserService::updateCurrentUSer($request->only('phone_number', 'password'));
+
+        return $this->success($user->toArray(), 'Profil mis à jour avec succès.');
     }
 
-    public function destroy(User $user)
+    public function destroy(User $user): JsonResponse
     {
         $user->delete();
 

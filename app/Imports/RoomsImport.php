@@ -18,7 +18,6 @@ class RoomsImport implements ToCollection, WithHeadingRow
     public function collection(Collection $rows): void
     {
         foreach ($rows as $row) {
-
             $city = City::firstOrCreate([
                 'name' => $row['ville'],
                 'postcode' => $row['code_postal']
