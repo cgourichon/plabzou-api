@@ -22,7 +22,7 @@ class TimeslotService
      */
     public static function getTimeslots(): Collection
     {
-        return Timeslot::with(['room', 'training', 'teachers', 'learners', 'promotions'])->orderBy('starts_at', 'desc')->get();
+        return Timeslot::with(['room', 'training', 'teachers.requests', 'learners', 'promotions', 'requests'])->orderBy('starts_at', 'desc')->get();
     }
 
     /**
