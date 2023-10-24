@@ -31,6 +31,6 @@ class TeacherService
         if (array_key_exists('training', $parameters))
             $query->whereRelation('trainings', 'trainings.id', '=', $parameters['training']);
 
-        return $query->get();
+        return $query->with('requests')->get();
     }
 }

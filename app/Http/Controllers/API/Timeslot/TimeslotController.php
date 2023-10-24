@@ -15,7 +15,6 @@ class TimeslotController extends BaseController
     public function index(): JsonResponse
     {
         $timeslots = TimeslotService::getTimeslots();
-
         return $this->success($timeslots->toArray(), 'Créneaux récupérés avec succès.');
     }
 
@@ -36,14 +35,15 @@ class TimeslotController extends BaseController
         }
     }
 
-    public function show(Timeslot $timeslot): JsonResponse
+    public function show(Timeslot $timeslot)
     {
         $timeslot->load(
             'room',
+            'requests',
             'training',
-            'teachers',
+            'teachers.requests',
             'learners',
-            'promotions', 'promotions.learners', 'promotions.course'
+            'promotions.learners', 'promotions.course'
         );
 
         return $this->success($timeslot->toArray(), 'Créneau récupéré avec succès.');

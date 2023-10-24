@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Services\Request;
 
 use App\Models\Request;
@@ -59,7 +58,52 @@ class RequestService
             throw new InvalidArgumentException("Vous ne pouvez pas valider/rejetter cette demande tant que le formateur n'y a pas répondu");
         }
 
+        if ($validated['is_approved_by_teacher'] === false && $validated['is_approved_by_admin']) {
+            throw new InvalidArgumentException("Vous ne pouvez pas valider la demande de créneaux, le formateur l'a refusée");
+        }
+
         $request->update($validated);
+        return $request;
+    }
+
+    public static function checkIfRequestExists(int $timeslotId, int $teacherId)
+    {
+        return Request::where('timeslot_id', '=', $timeslotId)
+            ->where('teacher_id', '=', $teacherId)
+            ->withTrashed()
+            ->first();
+    }
+
+    /**
+     * Permet de créer une nouvelle demande
+     *
+     * @param array $validated
+     * @return mixed
+     * @throws ValidationException
+     */
+    public static function createRequest(array $validated): mixed
+    {
+        $existingRequest = RequestService::checkIfRequestExists($validated['timeslot_id'], $validated['teacher_id']);
+
+        if ($existingRequest && $existingRequest->deleted_at) {
+            $timeslot = Timeslot::find($validated['timeslot_id']);
+            $timeslot->teachers()->attach($validated['teacher_id']);
+            $existingRequest->restore();
+            return $existingRequest;
+        }
+
+        if ($existingRequest) {
+            throw new InvalidArgumentException('Une demande existe déjà sur ce créneau pour ce formateur');
+        }
+
+        if (isset($validated['is_approved_by_admin'])) {
+            throw new InvalidArgumentException("Vous ne pouvez pas envoyer de réponse avant que le formateur est répondu");
+        }
+
+        $request = Request::create($validated);
+        $timeslot = Timeslot::find($validated['timeslot_id']);
+        $timeslot->teachers()->attach($validated['teacher_id']);
+
         return $request;
     }
 
@@ -112,49 +156,4 @@ class RequestService
             }
         }
     }
-
-    /**
-     * Vérifie si la demande existe
-     *
-     * @param int $timeslotId
-     * @param int $teacherId
-     * @return Request
-     */
-    public static function checkIfRequestExists(int $timeslotId, int $teacherId)
-    {
-        return Request::where('timeslot_id', '=', $timeslotId)
-            ->where('teacher_id', '=', $teacherId)
-            ->withTrashed()
-            ->first();
-    }
-
-    /**
-     * Permet de créer une nouvelle demande
-     *
-     * @param array $validated
-     * @return mixed
-     * @throws ValidationException
-     */
-    public static function createRequest(array $validated): mixed
-    {
-        $existingRequest = RequestService::checkIfRequestExists($validated['timeslot_id'], $validated['teacher_id']);
-
-        if ($existingRequest && $existingRequest->deleted_at) {
-            $timeslot = Timeslot::find($validated['timeslot_id']);
-            $timeslot->teachers()->attach($validated['teacher_id']);
-            $existingRequest->restore();
-            return $existingRequest;
-        }
-
-        if ($existingRequest) {
-            throw new InvalidArgumentException('Une demande existe déjà sur ce créneau pour ce formateur');
-        }
-
-        $request = Request::create($validated);
-        $timeslot = Timeslot::find($validated['timeslot_id']);
-        $timeslot->teachers()->attach($validated['teacher_id']);
-
-        return $request;
-    }
-
 }
