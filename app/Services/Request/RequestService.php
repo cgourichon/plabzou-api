@@ -58,7 +58,7 @@ class RequestService
             throw new InvalidArgumentException("Vous ne pouvez pas valider/rejetter cette demande tant que le formateur n'y a pas répondu");
         }
 
-        if ($validated['is_approved_by_teacher'] === false && $validated['is_approved_by_admin']) {
+        if ($validated['is_approved_by_teacher'] === false && (isset($validated['is_approved_by_admin']) && $validated['is_approved_by_admin'] === true)) {
             throw new InvalidArgumentException("Vous ne pouvez pas valider la demande de créneaux, le formateur l'a refusée");
         }
 

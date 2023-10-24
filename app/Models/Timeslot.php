@@ -119,6 +119,6 @@ class Timeslot extends Model
         return strtoupper($this->training->name) . ' du '
                 . Carbon::create($this->starts_at)->format('d/m/y') . ' de '
                 . Carbon::create($this->starts_at)->format('H:i') . ' à '
-                . Carbon::create($this->starts_at)->format('H:i');
+                . Carbon::create($this->ends_at)->format('H:i');
     }
 }
