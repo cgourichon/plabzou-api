@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\API\Building;
+namespace App\Http\Requests\API\Room;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class BuildingRequest extends FormRequest
+class RoomRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,11 +26,16 @@ class BuildingRequest extends FormRequest
             'name' => [
                 'required',
                 'string',
-                Rule::unique('buildings', 'name')->ignore($this->building?->id),
+                Rule::unique('rooms', 'name')->ignore($this->room?->id),
             ],
-            'place_id' => [
+            'seats_number' => [
                 'required',
-                'exists:places,id'
+                'integer',
+                'min:1'
+            ],
+            'building_id' => [
+                'required',
+                'exists:buildings,id'
             ]
         ];
     }
@@ -46,8 +51,11 @@ class BuildingRequest extends FormRequest
             'name.required' => 'Le nom est obligatoire.',
             'name.string' => 'Le nom doit être une chaîne de caractères.',
             'name.unique' => 'Le nom est déjà utilisé.',
-            'place_id.required' => 'Le lieu est obligatoire.',
-            'place_id.exists' => 'Le lieu n\'existe pas.'
+            'seats_number.required' => 'Le nombre de place est obligatoire.',
+            'seats_number.integer' => 'Le nombre de place doit être un chiffre entier.',
+            'seats_number.min' => 'Le nombre de place doit être supérieur à 0.',
+            'place_id.required' => 'Le bâtiment est obligatoire.',
+            'place_id.exists' => 'Le bâtiment n\'existe pas.'
         ];
     }
 }

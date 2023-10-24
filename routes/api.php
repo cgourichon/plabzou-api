@@ -55,8 +55,8 @@ Route::middleware('auth:sanctum')->group(static function () {
     Route::apiResource('cities', CityController::class)->middleware('role:administrativeEmployee');
     Route::apiResource('places', PlaceController::class)->middleware('role:administrativeEmployee');
     Route::apiResource('buildings', BuildingController::class)->middleware('role:administrativeEmployee');
+    Route::apiResource('rooms', RoomController::class)->middleware('role:administrativeEmployee');
 
-    Route::get('rooms', [RoomController::class, 'index'])->middleware('role:administrativeEmployee');
     Route::get('statuses', [StatusController::class, 'index'])->middleware('role:administrativeEmployee');
     Route::get('modes', [ModeController::class, 'index'])->middleware('role:administrativeEmployee');
 
