@@ -18,7 +18,7 @@ class AuthController extends BaseController
      * @param LoginRequest $request
      * @return JsonResponse
      */
-    public function login(LoginRequest $request)
+    public function login(LoginRequest $request): JsonResponse
     {
         $user = User::where('email', $request->email)->first();
 
@@ -29,7 +29,7 @@ class AuthController extends BaseController
         return $this->success([
             'token' => 'Bearer ' . $user->createToken('auth_token')->plainTextToken,
             'expires_at' => Carbon::now()->addMinutes(config('sanctum.expiration'))->timestamp,
-        ], 'Utilisateur connecté avec succès');
+        ], 'Utilisateur connecté avec succès.');
     }
 
     /**
@@ -38,11 +38,11 @@ class AuthController extends BaseController
      * @param Request $request
      * @return JsonResponse
      */
-    public function logout(Request $request)
+    public function logout(Request $request): JsonResponse
     {
         $request->user()->tokens()->delete();
 
-        return $this->success([], 'Utilisateur déconnecté avec succès');
+        return $this->success([], 'Utilisateur déconnecté avec succès.');
     }
 
     /**
@@ -51,16 +51,17 @@ class AuthController extends BaseController
      * @param Request $request
      * @return JsonResponse
      */
-    public function getAuthenticatedUser(Request $request)
+    public function getAuthenticatedUser(Request $request): JsonResponse
     {
         $user = $request->user();
-        $user->load('administrativeEmployee',
-                    'learner',
-                    'teacher.requests.timeslot.room',
-                    'teacher.requests.administrativeEmployee',
-                    'conversations.messages.sender',
-                    'conversations.teacher.user');
+        $user->load(
+            'administrativeEmployee',
+            'learner',
+            'teacher.requests.timeslot.room', 'teacher.requests.administrativeEmployee',
+            'conversations.messages.sender',
+            'conversations.teacher.user'
+        );
 
-        return $this->success($user->toArray(), 'Utilisateur récupéré avec succès');
+        return $this->success($user->toArray(), 'Utilisateur récupéré avec succès.');
     }
 }

@@ -7,18 +7,18 @@ use App\Http\Requests\API\Timeslot\TimeslotRequest;
 use App\Models\Timeslot;
 use App\Services\Timeslot\TimeslotService;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use InvalidArgumentException;
 
 class TimeslotController extends BaseController
 {
-    public function index()
+    public function index(): JsonResponse
     {
         $timeslots = TimeslotService::getTimeslots();
-
         return $this->success($timeslots->toArray(), 'Créneaux récupérés avec succès.');
     }
 
-    public function store(TimeslotRequest $request)
+    public function store(TimeslotRequest $request): JsonResponse
     {
         $validatedData = $request->validated();
 
@@ -37,12 +37,19 @@ class TimeslotController extends BaseController
 
     public function show(Timeslot $timeslot)
     {
-        $timeslot->load(['room', 'training', 'teachers', 'learners', 'promotions', 'promotions.learners', 'promotions.course']);
+        $timeslot->load(
+            'room',
+            'requests',
+            'training',
+            'teachers.requests',
+            'learners',
+            'promotions.learners', 'promotions.course'
+        );
 
         return $this->success($timeslot->toArray(), 'Créneau récupéré avec succès.');
     }
 
-    public function update(TimeslotRequest $request, Timeslot $timeslot)
+    public function update(TimeslotRequest $request, Timeslot $timeslot): JsonResponse
     {
         $validatedData = $request->validated();
 
@@ -59,10 +66,9 @@ class TimeslotController extends BaseController
         }
     }
 
-    public function destroy(Timeslot $timeslot)
+    public function destroy(Timeslot $timeslot): JsonResponse
     {
-        $timeslot->requests()->delete();
-        $timeslot->delete();
+        TimeslotService::deleteTimeslot($timeslot);
 
         return $this->success([], 'Créneau supprimé avec succès.');
     }

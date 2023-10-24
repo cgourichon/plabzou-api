@@ -24,18 +24,6 @@ class RequestService
     }
 
     /**
-     * Permet de retrouver une requête précise avec ses relations
-     *
-     * @param Request $request
-     * @return Request
-     */
-    public static function getRequestWithRelation(Request $request)
-    {
-        $request->load('teacher', 'timeslot.training', 'administrativeEmployee');
-        return $request;
-    }
-
-    /**
      * Permet de créer les demandes à partir de la création du créneau
      *
      * @param Timeslot $timeslot
@@ -44,14 +32,14 @@ class RequestService
     public static function createRequests(Timeslot $timeslot): void
     {
         $timeslot->load('teachers');
-        $teachers  = $timeslot->teachers;
+        $teachers = $timeslot->teachers;
 
         foreach ($teachers as $teacher) {
 
             Request::create([
-               'teacher_id' => $teacher->user_id,
-               'timeslot_id' => $timeslot->id,
-               'administrative_employee_id' => Auth::id()
+                'teacher_id' => $teacher->user_id,
+                'timeslot_id' => $timeslot->id,
+                'administrative_employee_id' => Auth::id()
             ]);
         }
     }
@@ -68,6 +56,10 @@ class RequestService
 
         if (is_null($validated['is_approved_by_teacher']) && !is_null($validated['is_approved_by_admin'])) {
             throw new InvalidArgumentException("Vous ne pouvez pas valider/rejetter cette demande tant que le formateur n'y a pas répondu");
+        }
+
+        if ($validated['is_approved_by_teacher'] === false && $validated['is_approved_by_admin']) {
+            throw new InvalidArgumentException("Vous ne pouvez pas valider la demande de créneaux, le formateur l'a refusée");
         }
 
         $request->update($validated);
@@ -104,6 +96,10 @@ class RequestService
             throw new InvalidArgumentException('Une demande existe déjà sur ce créneau pour ce formateur');
         }
 
+        if (isset($validated['is_approved_by_admin'])) {
+            throw new InvalidArgumentException("Vous ne pouvez pas envoyer de réponse avant que le formateur est répondu");
+        }
+
         $request = Request::create($validated);
         $timeslot = Timeslot::find($validated['timeslot_id']);
         $timeslot->teachers()->attach($validated['teacher_id']);
@@ -112,6 +108,8 @@ class RequestService
     }
 
     /**
+     * Supprimer une demande (annulation car suppression partielle)
+     *
      * @param Request $request
      * @return void
      */
@@ -122,8 +120,9 @@ class RequestService
         $request->delete();
     }
 
-
     /**
+     * Mettre à jour les demandes suite à une modification du créneau
+     *
      * @param Collection $oldTeachers
      * @param Collection $newTeachers
      * @param Timeslot $timeslot
@@ -157,5 +156,4 @@ class RequestService
             }
         }
     }
-
 }
