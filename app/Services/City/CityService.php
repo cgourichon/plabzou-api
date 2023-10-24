@@ -18,4 +18,16 @@ class CityService
     {
         return City::findOrFail($id);
     }
+
+    public static function createCity(array $data): City
+    {
+        return City::create($data);
+    }
+
+    public static function updateCity(City $city, array $data): City
+    {
+        $city->update($data);
+
+        return $city;
+    }
 }

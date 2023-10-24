@@ -50,11 +50,11 @@ Route::middleware('auth:sanctum')->group(static function () {
     Route::apiResource('timeslots', TimeslotController::class)->middleware('role:administrativeEmployee');
     Route::apiResource('requests', RequestController::class)->only('index', 'store', 'show', 'destroy')->middleware('role:administrativeEmployee');
     Route::apiResource('requests', RequestController::class)->only('update')->middleware('role:administrativeEmployee,teacher');
+    Route::apiResource('cities', CityController::class)->middleware('role:administrativeEmployee');
 
     Route::get('rooms', [RoomController::class, 'index'])->middleware('role:administrativeEmployee');
     Route::get('statuses', [StatusController::class, 'index'])->middleware('role:administrativeEmployee');
     Route::get('modes', [ModeController::class, 'index'])->middleware('role:administrativeEmployee');
-    Route::get('cities', [CityController::class, 'index'])->middleware('role:administrativeEmployee');
 
     Route::prefix('learners')->controller(LearnerController::class)->group(static function () {
         Route::get('', 'index');
