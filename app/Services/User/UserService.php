@@ -8,11 +8,22 @@ use Illuminate\Support\Facades\Auth;
 
 class UserService
 {
+    /**
+     * Récupérer la liste des utilisateurs
+     *
+     * @return Collection
+     */
     public static function getUsers(): Collection
     {
         return User::with(['administrativeEmployee', 'teacher', 'learner'])->get();
     }
 
+    /**
+     * Enregistrer un nouvel utilisateur
+     *
+     * @param array $data
+     * @return User
+     */
     public static function createUser(array $data): User
     {
         $user = User::create(self::formatUserData($data));
@@ -21,6 +32,12 @@ class UserService
         return $user;
     }
 
+    /**
+     * Formater les données
+     *
+     * @param array $data
+     * @return array
+     */
     private static function formatUserData(array $data): array
     {
         $data['first_name'] = ucwords(strtolower($data['first_name']));
@@ -36,6 +53,13 @@ class UserService
         return $data;
     }
 
+    /**
+     * Remplire l'instance à partir des données fournies
+     *
+     * @param User $user
+     * @param array $data
+     * @return void
+     */
     private static function fillUser(User $user, array $data): void
     {
         if (isset($data['is_super_admin'])) {
@@ -60,6 +84,13 @@ class UserService
         }
     }
 
+    /**
+     * Mettre à jour les informations de l'utilisateur
+     *
+     * @param User $user
+     * @param array $data
+     * @return User
+     */
     public static function updateUser(User $user, array $data): User
     {
         $user->fill(self::formatUserData($data));
@@ -69,6 +100,12 @@ class UserService
         return $user;
     }
 
+    /**
+     * Mettre à jour le profil de l'utilisateur
+     *
+     * @param array $data
+     * @return User
+     */
     public static function updateCurrentUSer(array $data): User
     {
         $user = Auth::user();

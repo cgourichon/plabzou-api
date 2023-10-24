@@ -3,15 +3,31 @@
 namespace App\Services\Training;
 
 use App\Models\Training;
+use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
-class TrainingService {
-    public static function getTrainings(): Collection {
+class TrainingService
+{
+    /**
+     * Récupérer la liste des formations
+     *
+     * @return Collection
+     */
+    public static function getTrainings(): Collection
+    {
         return Training::with('categories')->get();
     }
 
-    public static function createTraining(array $data): Training {
+    /**
+     * Enregistrer une nouvelle formation
+     *
+     * @param array $data
+     * @return Training
+     * @throws Exception
+     */
+    public static function createTraining(array $data): Training
+    {
         DB::beginTransaction();
         try {
             $training = Training::create($data);
@@ -25,13 +41,22 @@ class TrainingService {
             DB::commit();
 
             return $training;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             throw $e;
         }
     }
 
-    public static function updateTraining(Training $training, array $data): Training {
+    /**
+     * Mettre à jour les informations d'une formation
+     *
+     * @param Training $training
+     * @param array $data
+     * @return Training
+     * @throws Exception
+     */
+    public static function updateTraining(Training $training, array $data): Training
+    {
         DB::beginTransaction();
         try {
             $training->update($data);
@@ -45,7 +70,7 @@ class TrainingService {
             DB::commit();
 
             return $training;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             throw $e;
         }

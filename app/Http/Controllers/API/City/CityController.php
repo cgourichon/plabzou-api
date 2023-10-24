@@ -10,9 +10,6 @@ use Illuminate\Http\JsonResponse;
 
 class CityController extends BaseController
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(): JsonResponse
     {
         $cities = CityService::getCities();
@@ -20,38 +17,26 @@ class CityController extends BaseController
         return $this->success($cities->toArray(), 'Villes récupérées avec succès.');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(CityRequest $request)
+    public function store(CityRequest $request): JsonResponse
     {
         $city = CityService::createCity($request->validated());
 
         return $this->success($city->toArray(), 'Ville créé avec succès.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(City $city)
+    public function show(City $city): JsonResponse
     {
         return $this->success($city->toArray(), 'Ville récupérée avec succès.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(CityRequest $request, City $city)
+    public function update(CityRequest $request, City $city): JsonResponse
     {
         $city = CityService::updateCity($city, $request->validated());
 
         return $this->success($city->toArray(), 'Ville mise à jour avec succès.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(City $city)
+    public function destroy(City $city): JsonResponse
     {
         $city->delete();
 

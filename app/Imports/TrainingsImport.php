@@ -10,11 +10,11 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 class TrainingsImport implements ToModel, WithHeadingRow
 {
     /**
-    * @param array $row
-    *
-    * @return Model|null
-    */
-    public function model(array $row)
+     * @param array $row
+     *
+     * @return Model|Training|null
+     */
+    public function model(array $row): Model|Training|null
     {
         return new Training([
             'name' => $row['formation'],

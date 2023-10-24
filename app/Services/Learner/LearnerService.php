@@ -9,11 +9,22 @@ use Illuminate\Support\Collection;
 
 class LearnerService
 {
+    /**
+     * Récupérer les modes de suivi des formations par les apprenants
+     *
+     * @return Collection
+     */
     public static function getLearnerModes(): Collection
     {
         return Mode::all();
     }
 
+    /**
+     * Récupérer la liste des apprenants
+     *
+     * @param array $parameters
+     * @return Collection
+     */
     public static function getLearners(array $parameters): Collection
     {
         $query = Learner::query();
